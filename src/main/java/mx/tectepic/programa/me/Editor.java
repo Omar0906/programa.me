@@ -9,11 +9,7 @@ import aux_tools.FontSelector;
 import aux_tools.TextLineNumber;
 import java.awt.Font;
 import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JTextArea;
 
 public class Editor extends javax.swing.JFrame {
@@ -32,7 +28,7 @@ public class Editor extends javax.swing.JFrame {
         tln = new TextLineNumber(texto);
         vtnTexto.setViewportView(texto);
         vtnTexto.setRowHeaderView(tln);
-        tpTablas.setVisible(false);
+        esNuevo = true;
     }
 
     /**
@@ -109,6 +105,11 @@ public class Editor extends javax.swing.JFrame {
         btnGuardar.setFocusable(false);
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnGuardar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnGuardar);
         jToolBar1.add(jSeparator2);
 
@@ -356,12 +357,22 @@ public class Editor extends javax.swing.JFrame {
         //Si es análisis léxico, se muestra la tabla donde se
         //listaran lo lexemas encontrados
         //Si es otro tipo, se oculta
-        if(cmbTipo.getSelectedIndex()==0){
+        if (cmbTipo.getSelectedIndex() == 0) {
             tpTablas.setVisible(true);
-        }else if(cmbTipo.getSelectedIndex()==1){
+        } else if (cmbTipo.getSelectedIndex() == 1) {
             tpTablas.setVisible(false);
         }
     }//GEN-LAST:event_cmbTipoActionPerformed
+
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
+        if (esNuevo) {
+            guardarComo();
+            esNuevo = false;
+        } else if (!estaGuardado || !esNuevo) {
+            guardar();
+            estaGuardado = true;
+        }
+    }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -401,6 +412,8 @@ public class Editor extends javax.swing.JFrame {
     private JTextArea texto;
     private TextLineNumber tln;
     public Font actualFont = new Font("Consolas", 0, 12);
+    private boolean esNuevo = true;
+    private boolean estaGuardado = true;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrir;
     private javax.swing.JButton btnAnalizar;
@@ -442,5 +455,21 @@ public class Editor extends javax.swing.JFrame {
     private void cambiarFuente(Font nuevo) {
         this.actualFont = nuevo;
         actualizarFuente();
+    }
+
+    private void guardarComo() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Specify a file to save");
+
+        int userSelection = fileChooser.showSaveDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+        }
+    }
+
+    private void guardar() {
+
     }
 }
