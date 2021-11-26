@@ -1,13 +1,13 @@
 inicio_programa programa_Ejemplo
 	inicio_var
-		definir x como entero = 22.3;
+		definir x como entero = 23;
 		definir y como decimal = 32.2;
 		definir ban como logico = verdadero;
-		definir mensaje como texo;
+		definir mensaje como texto;
 	fin_var
 		bloque
 			//Bloque de código
-			mensaje = "hola";
+			mensaje = "hola;
 			si(led1.estado){
 				mostrar "El led está prendido";
 			} sino{

@@ -14,19 +14,67 @@ import java.io.File;
 import javax.swing.JTextArea;
 import aux_tools.lexico.Lexer;
 import aux_tools.lexico.Tokens;
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
+import javax.swing.AbstractAction;
+import javax.swing.KeyStroke;
+import javax.swing.event.UndoableEditEvent;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.Document;
+import javax.swing.undo.CannotRedoException;
+import javax.swing.undo.CannotUndoException;
+import javax.swing.undo.UndoManager;
 
 public class Editor extends javax.swing.JFrame {
 
-    /**
-     * Creates new form Editor
-     */
+    private UndoManager undo = new UndoManager();
+
+    public void manager() {
+        Document doc = texto.getDocument();
+
+        // Listen for undo and redo events
+        doc.addUndoableEditListener((UndoableEditEvent evt) -> {
+            undo.addEdit(evt.getEdit());
+        });
+
+        // Create an undo action and add it to the text component
+        texto.getActionMap().put("Undo",
+                new AbstractAction("Undo") {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    if (undo.canUndo()) {
+                        undo.undo();
+                    }
+                } catch (CannotUndoException e) {
+                }
+            }
+        });
+
+        // Bind the undo action to ctl-Z
+        texto.getInputMap().put(KeyStroke.getKeyStroke("control Z"), "Undo");
+
+        // Create a redo action and add it to the text component
+        texto.getActionMap().put("Redo",
+                new AbstractAction("Redo") {
+            public void actionPerformed(ActionEvent evt) {
+                try {
+                    if (undo.canRedo()) {
+                        undo.redo();
+                    }
+                } catch (CannotRedoException e) {
+                }
+            }
+        });
+
+        // Bind the redo action to ctl-Y
+        texto.getInputMap().put(KeyStroke.getKeyStroke("control Y"), "Redo");
+    }
+
     public Editor() {
         initComponents();
         this.setLocationRelativeTo(null);
@@ -42,6 +90,7 @@ public class Editor extends javax.swing.JFrame {
         modelo = (DefaultTableModel) this.tblLexico.getModel();
         tpTablas.setVisible(true);
         tablaSimbolos_id = new TablaSimbolos();
+        manager();
     }
 
     /**
@@ -179,6 +228,11 @@ public class Editor extends javax.swing.JFrame {
         btnDeshacer.setFocusable(false);
         btnDeshacer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnDeshacer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnDeshacer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeshacerActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnDeshacer);
 
         btnRehacer.setFont(new java.awt.Font("Consolas", 0, 13)); // NOI18N
@@ -188,6 +242,11 @@ public class Editor extends javax.swing.JFrame {
         btnRehacer.setFocusable(false);
         btnRehacer.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnRehacer.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnRehacer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRehacerActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnRehacer);
 
         cmbTipo.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
@@ -386,8 +445,8 @@ public class Editor extends javax.swing.JFrame {
             cambiarFuente(temp);
         }
     }//GEN-LAST:event_btnConfiguracionActionPerformed
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt){
-        
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {
+
     }
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
         if (cmbTipo.getSelectedIndex() == 0) {
@@ -416,8 +475,8 @@ public class Editor extends javax.swing.JFrame {
                     switch (tokens) {
                         case ERROR:
                             erro = true;
-                            errores = errores + lexer.msg + lexer.lexeme + ", en la línea " + lexer.linea+"\n";
-                            insertarSimboloLexico(lexer.lexeme,tokens.name(), lexer.linea);
+                            errores = errores + lexer.msg + lexer.lexeme + ", en la línea " + lexer.linea + "\n";
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
                             break;
                         case P_Reservada:
                             insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
@@ -438,7 +497,7 @@ public class Editor extends javax.swing.JFrame {
                             insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
                             break;
                         case Identificador:
-                            tablaSimbolos_id.addToken(new Simbolo(lexer.lexeme,lexer.linea));
+                            tablaSimbolos_id.addToken(new Simbolo(lexer.lexeme, lexer.linea));
                             insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
                             break;
                         case Numero:
@@ -467,7 +526,7 @@ public class Editor extends javax.swing.JFrame {
                             break;
                     }
                 }
-                if(erro){
+                if (erro) {
                     txtMensajes.setText(errores);
                 }
             } catch (Exception e) {
@@ -483,9 +542,9 @@ public class Editor extends javax.swing.JFrame {
         //Si es análisis léxico, se muestra la tabla donde se
         //listaran lo lexemas encontrados
         //Si es otro tipo, se oculta
-        if(cmbTipo.getSelectedIndex()==0){
+        if (cmbTipo.getSelectedIndex() == 0) {
             tpTablas.setVisible(true);
-        }else if(cmbTipo.getSelectedIndex()==1){
+        } else if (cmbTipo.getSelectedIndex() == 1) {
             tpTablas.setVisible(false);
         }
     }//GEN-LAST:event_cmbTipoActionPerformed
@@ -493,6 +552,20 @@ public class Editor extends javax.swing.JFrame {
     private void btnTablasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTablasActionPerformed
         new Tabla(this).setVisible(true);
     }//GEN-LAST:event_btnTablasActionPerformed
+
+    private void btnDeshacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeshacerActionPerformed
+        try {
+            undo.undo();
+        } catch (CannotUndoException e) {
+        }
+    }//GEN-LAST:event_btnDeshacerActionPerformed
+
+    private void btnRehacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRehacerActionPerformed
+        try {
+            undo.redo();
+        } catch (CannotRedoException e) {
+        }
+    }//GEN-LAST:event_btnRehacerActionPerformed
 
     /**
      * @param args the command line arguments
