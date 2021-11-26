@@ -9,8 +9,20 @@ import aux_tools.FontSelector;
 import aux_tools.TextLineNumber;
 import java.awt.Font;
 import java.io.File;
-import javax.swing.JFileChooser;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JTextArea;
+import aux_tools.lexico.Lexer;
+import aux_tools.lexico.Tokens;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.PrintWriter;
+import java.io.Reader;
+import javax.swing.table.DefaultTableModel;
 
 public class Editor extends javax.swing.JFrame {
 
@@ -29,6 +41,8 @@ public class Editor extends javax.swing.JFrame {
         vtnTexto.setViewportView(texto);
         vtnTexto.setRowHeaderView(tln);
         esNuevo = true;
+        modelo = (DefaultTableModel) this.tblLexico.getModel();
+        tpTablas.setVisible(false);
     }
 
     /**
@@ -64,6 +78,8 @@ public class Editor extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         tpTablas = new javax.swing.JTabbedPane();
         listaTokens = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblLexico = new javax.swing.JTable();
         vtnTexto = new javax.swing.JScrollPane();
         jScrollPane3 = new javax.swing.JScrollPane();
         txtMensajes = new javax.swing.JTextArea();
@@ -105,11 +121,6 @@ public class Editor extends javax.swing.JFrame {
         btnGuardar.setFocusable(false);
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnGuardar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnGuardarActionPerformed(evt);
-            }
-        });
         jToolBar1.add(btnGuardar);
         jToolBar1.add(jSeparator2);
 
@@ -254,15 +265,33 @@ public class Editor extends javax.swing.JFrame {
         tpTablas.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
         tpTablas.setName(""); // NOI18N
 
+        tblLexico.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Lexema", "Componente", "Línea"
+            }
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(tblLexico);
+
         javax.swing.GroupLayout listaTokensLayout = new javax.swing.GroupLayout(listaTokens);
         listaTokens.setLayout(listaTokensLayout);
         listaTokensLayout.setHorizontalGroup(
             listaTokensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 220, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
         );
         listaTokensLayout.setVerticalGroup(
             listaTokensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 471, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
         );
 
         tpTablas.addTab("Componentes léxicos", listaTokens);
@@ -277,7 +306,7 @@ public class Editor extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 15, Short.MAX_VALUE)
+            .addGap(0, 3, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -303,7 +332,7 @@ public class Editor extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tpTablas, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tpTablas, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -350,29 +379,84 @@ public class Editor extends javax.swing.JFrame {
     }//GEN-LAST:event_btnConfiguracionActionPerformed
 
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
-        tpTablas.setVisible(true);
-    }//GEN-LAST:event_btnAnalizarActionPerformed
+        if (cmbTipo.getSelectedIndex() == 0) {
+            txtMensajes.setText("");
+            File archivo = new File("archivo.txt");
+            PrintWriter escribir;
+            try {
+                escribir = new PrintWriter(archivo);
+                escribir.print(texto.getText());
+                escribir.close();
+            } catch (FileNotFoundException ex) {
+            }
+            try {
+                modelo.setRowCount(0);
+                String errores = "";
+                Reader lector = new BufferedReader(new FileReader("archivo.txt"));
+                Lexer lexer = new Lexer(lector);
+                while (true) {
+                    Tokens tokens = lexer.yylex();
+                    if (tokens == null) {
+                        txtMensajes.setText("Terminado analisis lexico\n");
+                        break;
+                    }
+                    switch (tokens) {
+                        case ERROR:
+                            errores.concat(lexer.msg + lexer.lexeme + ", en la línea " + lexer.linea+"\n");
+                            break;
+                        case Reservadas:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Igual:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Suma:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Resta:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Multiplicacion:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Division:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Identificador:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Numero:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Decimal:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Texto:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                    }
+                }
+                txtMensajes.append(errores+"\nMostrado " + (errores.length()) + " errores");
+                
+            } catch (Exception e) {
 
+            }
+        }
+    }//GEN-LAST:event_btnAnalizarActionPerformed
+    private void insertarSimboloLexico(String lexema, String componente, int linea) {
+        Object[] item = {lexema, componente, linea};
+        modelo.addRow(item);
+    }
     private void cmbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTipoActionPerformed
         //Si es análisis léxico, se muestra la tabla donde se
         //listaran lo lexemas encontrados
         //Si es otro tipo, se oculta
-        if (cmbTipo.getSelectedIndex() == 0) {
+        if(cmbTipo.getSelectedIndex()==0){
             tpTablas.setVisible(true);
-        } else if (cmbTipo.getSelectedIndex() == 1) {
+        }else if(cmbTipo.getSelectedIndex()==1){
             tpTablas.setVisible(false);
         }
     }//GEN-LAST:event_cmbTipoActionPerformed
-
-    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
-        if (esNuevo) {
-            guardarComo();
-            esNuevo = false;
-        } else if (!estaGuardado || !esNuevo) {
-            guardar();
-            estaGuardado = true;
-        }
-    }//GEN-LAST:event_btnGuardarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -414,6 +498,7 @@ public class Editor extends javax.swing.JFrame {
     public Font actualFont = new Font("Consolas", 0, 12);
     private boolean esNuevo = true;
     private boolean estaGuardado = true;
+    private DefaultTableModel modelo;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrir;
     private javax.swing.JButton btnAnalizar;
@@ -431,6 +516,7 @@ public class Editor extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JToolBar.Separator jSeparator1;
     private javax.swing.JToolBar.Separator jSeparator2;
@@ -440,6 +526,7 @@ public class Editor extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel listaTokens;
     private javax.swing.JPanel pnlAnalisi;
+    private javax.swing.JTable tblLexico;
     private javax.swing.JTabbedPane tpTablas;
     private javax.swing.JTextArea txtMensajes;
     private javax.swing.JScrollPane vtnTexto;
@@ -455,21 +542,5 @@ public class Editor extends javax.swing.JFrame {
     private void cambiarFuente(Font nuevo) {
         this.actualFont = nuevo;
         actualizarFuente();
-    }
-
-    private void guardarComo() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Specify a file to save");
-
-        int userSelection = fileChooser.showSaveDialog(this);
-
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File fileToSave = fileChooser.getSelectedFile();
-            System.out.println("Save as file: " + fileToSave.getAbsolutePath());
-        }
-    }
-
-    private void guardar() {
-
     }
 }
