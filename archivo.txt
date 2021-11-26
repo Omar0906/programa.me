@@ -1,11 +1,21 @@
-inicio_programa [nombre del programa]
+inicio_programa programa_Ejemplo
 	inicio_var
-		//Bloque de declaracion de variables
-
+		definir x como entero = 23;
+		definir y como decimal = 32.2;
+		definir ban como logico = verdadero;
+		definir mensaje como texto;
 	fin_var
-	
-	bloque
-		//Bloque de codigo
-
-	fin_bloque
+		bloque
+			//Bloque de código
+			mensaje = "hola";
+			si(led1.estado){
+				mostrar "El led está prendido";
+			} sino{
+				led1.prender; 
+      }
+			selector(ban){
+				caso verdadero:
+					x = x+y;
+			}
+		fin_bloque
 fin_programa

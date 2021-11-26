@@ -47,6 +47,7 @@ SingleCharacter = [^\r\n\'\\]
     definir |
     como |
     si |
+    verdadero |
     sino |
     hacer |
     mientras |
@@ -89,7 +90,6 @@ SingleCharacter = [^\r\n\'\\]
     motor_paso |
     estado |
     grados |
-    cierto |
     falso {lexeme=yytext();linea = this.yyline+1; return P_Reservada;}
     {espacio} {/*Ignore*/}
     {Comment} {/*Ignore*/}
@@ -138,7 +138,7 @@ SingleCharacter = [^\r\n\'\\]
     "["|"]" {
         lexeme=yytext();linea = this.yyline+1; return SA_Corchetes;
     }
-    ";"|">"|"<"|"#"|"$" {
+    ";"|">"|"<"|"#"|"$"|":" {
         lexeme=yytext();linea = this.yyline+1; return Simbolo_Especial;
     }
     "." (prender|girar|apagar|estado) {lexeme=yytext();linea = this.yyline+1; return Propiedad;}

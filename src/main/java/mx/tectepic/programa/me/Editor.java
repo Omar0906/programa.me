@@ -763,7 +763,7 @@ public class Editor extends javax.swing.JFrame {
             byte[] bytxt=documento.getBytes();
             salida.write(bytxt);
             
-            mensaje="Archivo guaradado";
+            mensaje="Archivo guardado";
         } catch (Exception e) {
         }
         return mensaje;
