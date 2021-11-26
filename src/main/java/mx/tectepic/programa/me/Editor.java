@@ -16,12 +16,17 @@ import aux_tools.lexico.Lexer;
 import aux_tools.lexico.Tokens;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import javax.swing.AbstractAction;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.KeyStroke;
 import javax.swing.event.UndoableEditEvent;
 import javax.swing.table.DefaultTableModel;
@@ -87,6 +92,7 @@ public class Editor extends javax.swing.JFrame {
         vtnTexto.setViewportView(texto);
         vtnTexto.setRowHeaderView(tln);
         esNuevo = true;
+        seleccion = new JFileChooser();
         modelo = (DefaultTableModel) this.tblLexico.getModel();
         tpTablas.setVisible(true);
         tablaSimbolos_id = new TablaSimbolos();
@@ -150,6 +156,11 @@ public class Editor extends javax.swing.JFrame {
         btnNuevo.setFocusable(false);
         btnNuevo.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnNuevo.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNuevoActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnNuevo);
         jToolBar1.add(jSeparator1);
 
@@ -160,6 +171,11 @@ public class Editor extends javax.swing.JFrame {
         btnAbrir.setFocusable(false);
         btnAbrir.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnAbrir.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnAbrir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAbrirActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnAbrir);
 
         btnGuardar.setFont(new java.awt.Font("Consolas", 0, 13)); // NOI18N
@@ -364,6 +380,12 @@ public class Editor extends javax.swing.JFrame {
 
         tpTablas.addTab("Componentes léxicos", listaTokens);
 
+        vtnTexto.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                vtnTextoKeyReleased(evt);
+            }
+        });
+
         txtMensajes.setEditable(false);
         txtMensajes.setColumns(20);
         txtMensajes.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
@@ -446,7 +468,13 @@ public class Editor extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnConfiguracionActionPerformed
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {
-
+        if (esNuevo) {
+            guardarComo();
+            
+        } else if (!estaGuardado || !esNuevo) {
+            guardar();
+            estaGuardado = true;
+        }
     }
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
         if (cmbTipo.getSelectedIndex() == 0) {
@@ -567,6 +595,41 @@ public class Editor extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnRehacerActionPerformed
 
+    private void vtnTextoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_vtnTextoKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_vtnTextoKeyReleased
+
+    private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
+        if (esNuevo) {
+                guardarComo();
+        }
+        int reply = JOptionPane.showConfirmDialog(null, "¿Desea abrir un archivo con la sintaxis básica de programa.me [.pme]",
+                "YES_NO_OPTION", JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE);
+        if (reply == JOptionPane.YES_OPTION){
+            
+            String ruta = new File("src\\main\\java\\aux_tools\\Archivo Nuevo.pme").getAbsolutePath(); 
+            System.out.print(ruta);
+            archivo=new File(ruta);
+            if(archivo.canRead()){
+                if(archivo.getName().endsWith("pme")){
+                    String documento=AbrirArchivo(archivo);
+                    texto.setText(documento);                    
+                }else{
+                    JOptionPane.showMessageDialog(null, "Archivo no es compatible");
+                }
+            }
+        }else{
+           texto.setText("");
+           
+        }
+        //this.tblLexico
+    }//GEN-LAST:event_btnNuevoActionPerformed
+
+    private void btnAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirActionPerformed
+        abrir();
+    }//GEN-LAST:event_btnAbrirActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -609,6 +672,10 @@ public class Editor extends javax.swing.JFrame {
     private boolean estaGuardado = true;
     private DefaultTableModel modelo;
     TablaSimbolos tablaSimbolos_id;
+    private JFileChooser seleccion;
+    File archivo;
+    FileInputStream entrada;
+    FileOutputStream salida;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrir;
     private javax.swing.JButton btnAnalizar;
@@ -653,4 +720,84 @@ public class Editor extends javax.swing.JFrame {
         this.actualFont = nuevo;
         actualizarFuente();
     }
+    
+    private void guardarComo() {
+        if(seleccion.showDialog(null, "Guardar")==JFileChooser.APPROVE_OPTION){
+            archivo=seleccion.getSelectedFile();
+            if (archivo.getName().endsWith("pme")) {
+                String Documento=texto.getText();
+                String mensaje=guardararchivo(archivo, Documento);
+                if (mensaje!=null) {
+                    JOptionPane.showMessageDialog(null, mensaje);
+                    esNuevo = false;
+                }else{
+                    JOptionPane.showMessageDialog(null, "Archivo no compatible");
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "extencion de archivo no valido");
+            }
+        }
+    }
+    
+    private void guardar() {
+        //if(seleccion.showDialog(null, "Guardar")==JFileChooser.APPROVE_OPTION){
+            archivo=seleccion.getSelectedFile();
+            if (archivo.getName().endsWith("pme")) {
+                String Documento=texto.getText();
+                String mensaje=guardararchivo(archivo, Documento);
+                if (mensaje!=null) {
+                    JOptionPane.showMessageDialog(null, mensaje);
+                }else{
+                    JOptionPane.showMessageDialog(null, "Archivo no compatible");
+                }
+            }else{
+                JOptionPane.showMessageDialog(null, "extencion de archivo no valido");
+            }
+        //}
+    }
+
+    public String guardararchivo(File archivo, String documento){
+        String mensaje=null;
+        try {
+            salida=new FileOutputStream(archivo);
+            byte[] bytxt=documento.getBytes();
+            salida.write(bytxt);
+            
+            mensaje="Archivo guaradado";
+        } catch (Exception e) {
+        }
+        return mensaje;
+    }
+    
+    public String AbrirArchivo(File archivo){
+        String documento="";
+        try {
+            entrada=new FileInputStream(archivo);
+            int ascii;
+            while((ascii=entrada.read())!=-1) {                
+                char caracter=(char)ascii;
+                documento+=caracter;
+            }
+        } catch (Exception e) {
+        }
+        return documento;
+    }
+
+    public void abrir(){
+        if(seleccion.showDialog(null, "Abrir")==JFileChooser.APPROVE_OPTION){
+            archivo=seleccion.getSelectedFile();
+            if(archivo.canRead()){
+                if(archivo.getName().endsWith("pme")){
+                    String documento=AbrirArchivo(archivo);
+                    texto.setText(documento);                    
+                }else{
+                    JOptionPane.showMessageDialog(null, "Archivo no es compatible");
+                }
+            }
+        }
+        //Clear_Table1();
+        //clear_table2();
+        //txtResultado.setText("");
+        
+    }    
 }

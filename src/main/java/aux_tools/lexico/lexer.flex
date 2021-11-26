@@ -43,6 +43,7 @@ SingleCharacter = [^\r\n\'\\]
     fin_programa |
     inicio_var |
     fin_var |
+    fin_bloque |
     definir |
     como |
     si |
