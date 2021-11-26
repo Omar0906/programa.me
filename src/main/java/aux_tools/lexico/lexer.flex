@@ -3,6 +3,7 @@ import static aux_tools.lexico.Tokens.*;
 %%
 %class Lexer
 %public
+%unicode
 %line
 %column
 %state COMMENT,STRING
@@ -11,7 +12,8 @@ L=[a-zA-Z_]+
 D=[0-9]+
 SIGNO= " "|"+"|"-"
 espacio=[ ,\t,\r,\n]+
-
+OctDigit          = [0-7]
+ID = {L}({L}|{D})*
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 WhiteSpace     = {LineTerminator} | [ \t\f]
@@ -32,6 +34,8 @@ SingleCharacter = [^\r\n\'\\]
     public int columna = this.yycolumn;
     private int comment_count = 0;
     public String msg = "";
+    private int par_apcount = 0;
+    public boolean parentesisIguales(){return par_apcount==0;}
 %}
 %%
 <YYINITIAL>{
@@ -78,29 +82,53 @@ SingleCharacter = [^\r\n\'\\]
     intensidad |
     motor_electrico |
     girar |
+    logico |
     derecha |
     izquierda |
     motor_paso |
+    estado |
     grados |
     cierto |
-    falso {lexeme=yytext();linea = this.yyline+1; return Reservadas;}
+    falso {lexeme=yytext();linea = this.yyline+1; return P_Reservada;}
     {espacio} {/*Ignore*/}
     {Comment} {/*Ignore*/}
-
+    
     \" { yybegin(STRING); string.setLength(0); }
 
-    "=" {lexeme=yytext();linea = this.yyline+1; return Igual;}
+    "=" {lexeme=yytext();linea = this.yyline+1; return Asignacion;}
     "+" {lexeme=yytext();linea = this.yyline+1; return Suma;}
     "-" {lexeme=yytext();linea = this.yyline+1; return Resta;}
     "*" {lexeme=yytext();linea = this.yyline+1; return Multiplicacion;}
     "/" {lexeme=yytext();linea = this.yyline+1; return Division;}
-    {L}({L}|{D})* {lexeme=yytext(); linea = this.yyline+1; return Identificador;}
-    //("(-"{D}+")")|
+
     {D}+ {lexeme=yytext(); linea = this.yyline+1; return Numero;}
+
     {D}+("." [0-9]+)? {
         lexeme=yytext();linea = this.yyline+1; return Decimal;
     }
-    "("|")" {
+
+    {D} ({D}|.)+ ({L}|{D}) {this.msg = "Código de error 3: Formato de número incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;}
+    
+    {D} ({L}|.)+ (".".+ [0-9]+) {
+        this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+    }
+    
+    {D} ({L}|{D})+ ("." [0-9]+) (("." ([0-9]+|.+))+) {
+            this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+    }
+    
+    {D} ({L}|.)+ ("." ([0-9]+|{L}+|"."+)+) {
+        this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+    }
+    {ID} {lexeme=yytext(); linea = this.yyline+1; return Identificador;}
+    //("(-"{D}+")")|
+
+    "(" {
+        par_apcount++;
+        lexeme=yytext();linea = this.yyline+1; return SA_Parentesis;
+    }
+    ")" {
+        par_apcount--;
         lexeme=yytext();linea = this.yyline+1; return SA_Parentesis;
     }
     "{"|"}" {
@@ -109,7 +137,11 @@ SingleCharacter = [^\r\n\'\\]
     "["|"]" {
         lexeme=yytext();linea = this.yyline+1; return SA_Corchetes;
     }
-     . {return ERROR;}
+    ";"|">"|"<"|"#"|"$" {
+        lexeme=yytext();linea = this.yyline+1; return Simbolo_Especial;
+    }
+    "." (prender|girar|apagar|estado) {lexeme=yytext();linea = this.yyline+1; return Propiedad;}
+     . {this.msg = "Código de error 1: Símbolo no reconocido ";lexeme=yytext();linea=this.yyline+1;return ERROR;}
 }
 <COMMENT> {
   "/*" { comment_count++; }
@@ -117,7 +149,7 @@ SingleCharacter = [^\r\n\'\\]
   {CommentContent} { }
 }
 <STRING> {
-  \"                             { yybegin(YYINITIAL);lexeme=string.toString();linea=this.yyline()+1 return Texto;}
+  \"                             { yybegin(YYINITIAL);lexeme=string.toString();linea=this.yyline+1;return Texto;}
   
   {StringCharacter}+             { string.append( yytext() ); }
   
@@ -134,6 +166,7 @@ SingleCharacter = [^\r\n\'\\]
                         				   string.append( val ); }
   
   /* error cases */
-  \\.                            { throw new RuntimeException("Illegal escape sequence \""+yytext()+"\""); }
-  {LineTerminator}               { throw new RuntimeException("Unterminated string at end of line"); }
+  ";" {this.msg = "Código de error 4: La cadena no esta cerrada "; lexeme=yytext(); linea = this.yyline+1; yybegin(YYINITIAL); return ERROR; }
+  \\.                            { this.msg = "Código de error 4: La cadena no esta cerrada "; lexeme=yytext(); linea = this.yyline+1; yybegin(YYINITIAL); return ERROR; }
+  {LineTerminator}               { this.msg = "Código de error 4: La cadena no esta cerrada "; lexeme=yytext(); linea = this.yyline+1; yybegin(YYINITIAL); return ERROR; }
 }

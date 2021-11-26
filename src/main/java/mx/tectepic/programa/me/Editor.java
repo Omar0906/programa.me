@@ -6,14 +6,11 @@ package mx.tectepic.programa.me;
 
 import aux_tools.EstiloDialog;
 import aux_tools.FontSelector;
+import aux_tools.Simbolo;
+import aux_tools.TablaSimbolos;
 import aux_tools.TextLineNumber;
 import java.awt.Font;
 import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
-import javax.swing.ImageIcon;
 import javax.swing.JTextArea;
 import aux_tools.lexico.Lexer;
 import aux_tools.lexico.Tokens;
@@ -22,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.Reader;
+import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 
 public class Editor extends javax.swing.JFrame {
@@ -42,7 +40,8 @@ public class Editor extends javax.swing.JFrame {
         vtnTexto.setRowHeaderView(tln);
         esNuevo = true;
         modelo = (DefaultTableModel) this.tblLexico.getModel();
-        tpTablas.setVisible(false);
+        tpTablas.setVisible(true);
+        tablaSimbolos_id = new TablaSimbolos();
     }
 
     /**
@@ -121,6 +120,11 @@ public class Editor extends javax.swing.JFrame {
         btnGuardar.setFocusable(false);
         btnGuardar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnGuardar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnGuardar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGuardarActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnGuardar);
         jToolBar1.add(jSeparator2);
 
@@ -240,6 +244,11 @@ public class Editor extends javax.swing.JFrame {
         btnTablas.setFocusable(false);
         btnTablas.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         btnTablas.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnTablas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnTablasActionPerformed(evt);
+            }
+        });
         jToolBar1.add(btnTablas);
         jToolBar1.add(jSeparator5);
 
@@ -270,7 +279,7 @@ public class Editor extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Lexema", "Componente", "Línea"
+                "Lexema", "Componente", "Linea"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -287,11 +296,11 @@ public class Editor extends javax.swing.JFrame {
         listaTokens.setLayout(listaTokensLayout);
         listaTokensLayout.setHorizontalGroup(
             listaTokensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
         );
         listaTokensLayout.setVerticalGroup(
             listaTokensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 471, Short.MAX_VALUE)
         );
 
         tpTablas.addTab("Componentes léxicos", listaTokens);
@@ -306,7 +315,7 @@ public class Editor extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 3, Short.MAX_VALUE)
+            .addGap(0, 15, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -321,10 +330,10 @@ public class Editor extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel1)
+                        .addGap(9, 9, 9)
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 43, Short.MAX_VALUE))
+                        .addGap(0, 35, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(vtnTexto)
@@ -332,7 +341,7 @@ public class Editor extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tpTablas, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tpTablas, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -377,10 +386,13 @@ public class Editor extends javax.swing.JFrame {
             cambiarFuente(temp);
         }
     }//GEN-LAST:event_btnConfiguracionActionPerformed
-
+    private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt){
+        
+    }
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
         if (cmbTipo.getSelectedIndex() == 0) {
             txtMensajes.setText("");
+            tablaSimbolos_id = new TablaSimbolos();
             File archivo = new File("archivo.txt");
             PrintWriter escribir;
             try {
@@ -392,6 +404,7 @@ public class Editor extends javax.swing.JFrame {
             try {
                 modelo.setRowCount(0);
                 String errores = "";
+                boolean erro = false;
                 Reader lector = new BufferedReader(new FileReader("archivo.txt"));
                 Lexer lexer = new Lexer(lector);
                 while (true) {
@@ -402,12 +415,14 @@ public class Editor extends javax.swing.JFrame {
                     }
                     switch (tokens) {
                         case ERROR:
-                            errores.concat(lexer.msg + lexer.lexeme + ", en la línea " + lexer.linea+"\n");
+                            erro = true;
+                            errores = errores + lexer.msg + lexer.lexeme + ", en la línea " + lexer.linea+"\n";
+                            insertarSimboloLexico(lexer.lexeme,tokens.name(), lexer.linea);
                             break;
-                        case Reservadas:
+                        case P_Reservada:
                             insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
                             break;
-                        case Igual:
+                        case Asignacion:
                             insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
                             break;
                         case Suma:
@@ -423,6 +438,7 @@ public class Editor extends javax.swing.JFrame {
                             insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
                             break;
                         case Identificador:
+                            tablaSimbolos_id.addToken(new Simbolo(lexer.lexeme,lexer.linea));
                             insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
                             break;
                         case Numero:
@@ -434,10 +450,26 @@ public class Editor extends javax.swing.JFrame {
                         case Texto:
                             insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
                             break;
+                        case SA_Parentesis:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case SA_Llaves:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case SA_Corchetes:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Simbolo_Especial:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Propiedad:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
                     }
                 }
-                txtMensajes.append(errores+"\nMostrado " + (errores.length()) + " errores");
-                
+                if(erro){
+                    txtMensajes.setText(errores);
+                }
             } catch (Exception e) {
 
             }
@@ -457,6 +489,10 @@ public class Editor extends javax.swing.JFrame {
             tpTablas.setVisible(false);
         }
     }//GEN-LAST:event_cmbTipoActionPerformed
+
+    private void btnTablasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTablasActionPerformed
+        new Tabla(this).setVisible(true);
+    }//GEN-LAST:event_btnTablasActionPerformed
 
     /**
      * @param args the command line arguments
@@ -499,6 +535,7 @@ public class Editor extends javax.swing.JFrame {
     private boolean esNuevo = true;
     private boolean estaGuardado = true;
     private DefaultTableModel modelo;
+    TablaSimbolos tablaSimbolos_id;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrir;
     private javax.swing.JButton btnAnalizar;

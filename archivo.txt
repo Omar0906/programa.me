@@ -1,6 +1,18 @@
-121e12e1
-12e12e21
-e12e1
-e1e11221e1e12
-121231
-23edd
+inicio_programa programa_Ejemplo
+	inicio_var
+		definir x como entero = 22.3;
+		definir y como decimal = 32.2;
+		definir ban como logico = verdadero;
+		definir mensaje como texo;
+	fin_var
+		bloque
+			//Bloque de código
+			mensaje = "hola";
+			si(led1.estado){
+				mostrar "El led está prendido";
+			} sino{
+				led1.prender; 
+      }
+
+		fin_bloque
+fin_programa

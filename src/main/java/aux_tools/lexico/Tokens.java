@@ -5,8 +5,8 @@
 package aux_tools.lexico;
 
 public enum Tokens {
-    Reservadas,
-    Igual,
+    P_Reservada,
+    Asignacion,
     Suma,
     Resta,
     Multiplicacion,
@@ -17,6 +17,8 @@ public enum Tokens {
     Texto,
     SA_Parentesis,
     SA_Llaves,
+    Simbolo_Especial,
     SA_Corchetes,
+    Propiedad,
     ERROR
 }
