@@ -4,6 +4,7 @@ inicio_programa programa_Ejemplo
 		definir y como decimal = 32.2;
 		definir ban como logico = verdadero;
 		definir mensaje como texto;
+		definir lapso como tiempo = 23 min;
 	fin_var
 		bloque
 			//Bloque de código
@@ -13,9 +14,6 @@ inicio_programa programa_Ejemplo
 			} sino{
 				led1.prender; 
       }
-			selector(ban){
-				caso verdadero:
-					x = x+y;
-			}
+
 		fin_bloque
 fin_programa

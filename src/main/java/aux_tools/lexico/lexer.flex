@@ -10,9 +10,7 @@ import static aux_tools.lexico.Tokens.*;
 %type Tokens
 L=[a-zA-Z_]+
 D=[0-9]+
-SIGNO= " "|"+"|"-"
 espacio=[ ,\t,\r,\n]+
-OctDigit          = [0-7]
 ID = {L}({L}|{D})*
 LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
@@ -25,7 +23,6 @@ CommentContent       = ( [^*] | \*+ [^/*] )*
 
 STRING_TEXT=(\\\"|[^\n\r\"]|\\{WhiteSpace}+\\)*
 StringCharacter = [^\r\n\"\\]
-SingleCharacter = [^\r\n\'\\]
 
 %{
     StringBuilder string = new StringBuilder();
@@ -94,7 +91,7 @@ SingleCharacter = [^\r\n\'\\]
     {espacio} {/*Ignore*/}
     {Comment} {/*Ignore*/}
     
-    \" { yybegin(STRING); string.setLength(0); }
+    "\"" { yybegin(STRING); string.setLength(0); string.append("\""); }
 
     "=" {lexeme=yytext();linea = this.yyline+1; return Asignacion;}
     "+" {lexeme=yytext();linea = this.yyline+1; return Suma;}
@@ -102,19 +99,34 @@ SingleCharacter = [^\r\n\'\\]
     "*" {lexeme=yytext();linea = this.yyline+1; return Multiplicacion;}
     "/" {lexeme=yytext();linea = this.yyline+1; return Division;}
 
-    {D}+ {lexeme=yytext(); linea = this.yyline+1; return Numero;}
-
+    {D}+ {
+        lexeme=yytext(); linea = this.yyline+1; return Numero;
+    }
+    
+    {D}+ " " ("seg"|"hr"|"min") {
+        lexeme=yytext();linea = this.yyline+1; return Tiempo;
+    }
+    {D}+ ("seg"|"hr"|"min") {
+        this.msg = "Código de error 5: Formato de tiempo incorrecto, debe estar separado por un espacio "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+    }
+    
     {D}+("." [0-9]+)? {
         lexeme=yytext();linea = this.yyline+1; return Decimal;
     }
-
-    {D} ({D}|.)+ ({L}|{D}) {this.msg = "Código de error 3: Formato de número incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;}
-    
-    {D} ({L}|.)+ (".".+ [0-9]+) {
-        this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+    {D} ({D}|.)+ ({L}|{D}) {
+    this.msg = "Código de error 3: Formato de número incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+    }
+    "." {D}+ {
+    this.msg = "Código de error 3: Formato de número incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
     }
     
-    {D} ({L}|{D})+ ("." [0-9]+) (("." ([0-9]+|.+))+) {
+    {D} ({L}|".")+ ("."+ [0-9]+) {
+        this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+    }
+    {D}+ "." {
+        this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+    }
+    {D} ({L}|{D})+ ("." [0-9]+) (("." ([0-9]+|"."+))+) {
             this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
     }
     
@@ -150,7 +162,7 @@ SingleCharacter = [^\r\n\'\\]
   {CommentContent} { }
 }
 <STRING> {
-  \"                             { yybegin(YYINITIAL);lexeme=string.toString();linea=this.yyline+1;return Texto;}
+  \"                             { yybegin(YYINITIAL);string.append("\"");lexeme=string.toString();linea=this.yyline+1;return Texto;}
   
   {StringCharacter}+             { string.append( yytext() ); }
   
@@ -163,11 +175,10 @@ SingleCharacter = [^\r\n\'\\]
   "\\\""                         { string.append( '\"' ); }
   "\\'"                          { string.append( '\'' ); }
   "\\\\"                         { string.append( '\\' ); }
-  \\[0-3]? {OctDigit}? {OctDigit}  { char val = (char) Integer.parseInt(yytext().substring(1),8);
-                        				   string.append( val ); }
   
   /* error cases */
-  ";" {this.msg = "Código de error 4: La cadena no esta cerrada "; lexeme=yytext(); linea = this.yyline+1; yybegin(YYINITIAL); return ERROR; }
-  \\.                            { this.msg = "Código de error 4: La cadena no esta cerrada "; lexeme=yytext(); linea = this.yyline+1; yybegin(YYINITIAL); return ERROR; }
-  {LineTerminator}               { this.msg = "Código de error 4: La cadena no esta cerrada "; lexeme=yytext(); linea = this.yyline+1; yybegin(YYINITIAL); return ERROR; }
+  ";" {
+    this.msg = "Código de error 4: La cadena no esta cerrada "; lexeme=string.toString(); linea = this.yyline+1; yybegin(YYINITIAL); return ERROR; }
+  \\.                            { this.msg = "Código de error 4: La cadena no esta cerrada "; lexeme=string.toString(); linea = this.yyline+1; yybegin(YYINITIAL); return ERROR; }
+  {LineTerminator}               { this.msg = "Código de error 4: La cadena no esta cerrada "; lexeme=string.toString(); linea = this.yyline+1; yybegin(YYINITIAL); return ERROR; }
 }

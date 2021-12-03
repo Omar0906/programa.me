@@ -19,6 +19,7 @@ public enum Tokens {
     SA_Llaves,
     Simbolo_Especial,
     SA_Corchetes,
+    Tiempo,
     Propiedad,
     ERROR
 }

@@ -503,7 +503,7 @@ public class Editor extends javax.swing.JFrame {
                     switch (tokens) {
                         case ERROR:
                             erro = true;
-                            errores = errores + lexer.msg + lexer.lexeme + ", en la línea " + lexer.linea + "\n";
+                            errores = errores + lexer.msg + "[" + lexer.lexeme + "]" + " ------ en la línea " + lexer.linea + "\n";
                             insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
                             break;
                         case P_Reservada:
@@ -532,6 +532,9 @@ public class Editor extends javax.swing.JFrame {
                             insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
                             break;
                         case Decimal:
+                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                            break;
+                        case Tiempo:
                             insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
                             break;
                         case Texto:
