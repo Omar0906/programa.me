@@ -5,7 +5,7 @@
 
 package aux_tools.sintactico;
 
-import aux_tools.sintactico.sym;
+import java_cup.runtime.Symbol;
 import mx.tectepic.programa.me.Editor;
 import java_cup.runtime.XMLElement;
 
