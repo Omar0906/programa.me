@@ -3,7 +3,6 @@ import static aux_tools.lexico.Tokens.*;
 %%
 %class Lexer
 %public
-%unicode
 %line
 %column
 %state COMMENT,STRING
@@ -28,7 +27,7 @@ StringCharacter = [^\r\n\"\\]
     StringBuilder string = new StringBuilder();
     public String lexeme;
     public int linea;
-    public int columna = this.yycolumn;
+    public int columna;
     private int comment_count = 0;
     public String msg = "";
     private int par_apcount = 0;
@@ -56,6 +55,9 @@ StringCharacter = [^\r\n\"\\]
     motor |
     display |
     led |
+    entero |
+    decimal |
+    texto |
     apagar |
     prender |
     seg |

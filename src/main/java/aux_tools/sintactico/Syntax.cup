@@ -1,0 +1,76 @@
+package aux_tools.sintactico;
+import aux_tools.sintactico.sym;
+import mx.tectepic.programa.me.Editor;
+parser code
+{: 
+    private Editor editor;
+    private Symbol s;
+    public void syntax_error(Symbol s){
+        this.s = s;
+    }
+    public Symbol getS(){
+        return this.s;
+    }
+:};
+
+terminal apagar, bloque, caso, como, definir, derecha, display, facil_bloque, facil_hacer_mientras, facil_mientras,
+    facil_repetir, facil_selector, facil_si, facil_sino, falso, fin_programa, fin_var, girar, grados, hacer, hr, incluir, 
+    inicio_programa, inicio_var, intensidad, izquierda, led, led_panel, led_rgb, led_semaforo, mientras, min, mostrar, 
+    motor, prender, repetir, salir, seg, selector, si, sino, tiempo, veces, verdadero, fin_bloque,
+    decimal,entero,texto,logico,
+    Identificador, Decimal, Tiempo, Numero, Texto, Punto_c, DosPuntos, Par_a, Par_c,Lla_a,Lla_c,Cor_a,Cor_c,Igual,Asignacion_s,
+    Suma,Resta,Mul,Div,Menor,Mayor,Diferente,Mayor_i,Menor_i,
+    ERROR;
+
+non terminal INICIO,BLOQUE_DECLARACION,BLOQUE_CODIGO, DECLARACIONES, CODIGO,
+    DECLARACION,DECLARACION_A,VALOR_LOGICO,ASIGNACION,EXPRESION,TERMINO,
+    FACTOR;
+
+start with INICIO;
+
+INICIO ::= inicio_programa Identificador BLOQUE_DECLARACION BLOQUE_CODIGO fin_programa
+;
+BLOQUE_DECLARACION ::=  inicio_var DECLARACIONES fin_var
+;
+BLOQUE_CODIGO ::= bloque CODIGO fin_bloque
+;
+DECLARACIONES ::= DECLARACIONES DECLARACION | 
+                        DECLARACION
+                        DECLARACIONES DECLARACION_A |
+                        DECLARACION_A
+;
+DECLARACION ::= definir Identificador como decimal Punto_c |
+    definir Identificador como Decimal Punto_c |
+    definir Identificador como logico Punto_c |
+    definir Identificador como Texto Punto_c |
+    definir Identificador como display Punto_c |
+    definir Identificador como motor Punto_c |
+    definir Identificador como led Punto_c |
+    definir Identificador como Tiempo Punto_c
+;
+DECLARACION_A ::= definir Identificador como entero Asignacion_s Numero Punto_c |
+    definir Identificador como decimal Asignacion_s Decimal Punto_c |
+    definir Identificador como logico Asignacion_s VALOR_LOGICO Punto_c |
+    definir Identificador como texto Asignacion_s Texto Punto_c |
+    definir Identificador como display Asignacion_s Punto_c |
+    definir Identificador como motor Asignacion_s Punto_c |
+    definir Identificador como led Asignacion_s Punto_c |
+    definir Identificador como tiempo Asignacion_s Tiempo Punto_c
+;
+VALOR_LOGICO ::= verdadero | falso
+;
+CODIGO ::= CODIGO ASIGNACION | ASIGNACION
+;
+ASIGNACION ::= Identificador Asignacion_s EXPRESION
+;
+EXPRESION ::= EXPRESION Suma TERMINO |
+    EXPRESION Resta TERMINO |
+    TERMINO
+;
+TERMINO ::= TERMINO Mul FACTOR |
+    TERMINO Div FACTOR  |
+    FACTOR
+;
+FACTOR ::= Par_a EXPRESION Par_c |
+    Numero | Decimal | Identificador
+;
