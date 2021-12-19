@@ -81,12 +81,13 @@ StringCharacter = [^\r\n\"\\]
     led_panel |
     led_rgb |
     intensidad |
-    motor_electrico |
+    o |
+    y |
+    no |
     girar |
     logico |
     derecha |
     izquierda |
-    motor_paso |
     estado |
     grados |
     falso {lexeme=yytext();linea = this.yyline+1; return P_Reservada;}

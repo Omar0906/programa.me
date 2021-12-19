@@ -17,5 +17,6 @@ public enum Tokens {
     SA_Corchetes,
     Tiempo,
     Propiedad,
+    Op_Logico,
     ERROR
 }

@@ -8,81 +8,84 @@ package aux_tools.sintactico;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int Mul = 68;
+  public static final int Mul = 71;
   public static final int display = 8;
+  public static final int Menor = 73;
   public static final int facil_sino = 15;
-  public static final int Menor = 70;
   public static final int facil_mientras = 11;
   public static final int motor = 35;
   public static final int fin_programa = 17;
-  public static final int Div = 69;
-  public static final int DosPuntos = 57;
-  public static final int Resta = 67;
+  public static final int Div = 72;
+  public static final int DosPuntos = 60;
+  public static final int Resta = 70;
   public static final int mientras = 32;
   public static final int led_rgb = 30;
   public static final int sino = 42;
   public static final int fin_bloque = 46;
   public static final int decimal = 47;
-  public static final int Suma = 66;
+  public static final int Suma = 69;
   public static final int caso = 4;
   public static final int veces = 44;
   public static final int mostrar = 34;
   public static final int inicio_var = 25;
-  public static final int ERROR = 75;
+  public static final int ERROR = 78;
   public static final int incluir = 23;
   public static final int grados = 20;
+  public static final int y = 51;
   public static final int definir = 6;
+  public static final int PUNTO_COMA = 59;
   public static final int girar = 19;
+  public static final int o = 53;
   public static final int seg = 39;
   public static final int facil_bloque = 9;
-  public static final int Lla_c = 61;
+  public static final int Lla_c = 64;
   public static final int hr = 22;
-  public static final int Lla_a = 60;
+  public static final int Lla_a = 63;
   public static final int prender = 36;
   public static final int facil_si = 14;
+  public static final int no = 52;
   public static final int inicio_programa = 24;
   public static final int facil_hacer_mientras = 10;
   public static final int led_semaforo = 31;
   public static final int facil_repetir = 12;
   public static final int derecha = 7;
   public static final int texto = 49;
-  public static final int Menor_i = 74;
-  public static final int Mayor = 71;
+  public static final int Menor_i = 77;
+  public static final int Mayor = 74;
   public static final int facil_selector = 13;
-  public static final int Texto = 55;
+  public static final int Texto = 58;
   public static final int EOF = 0;
   public static final int repetir = 37;
   public static final int falso = 16;
   public static final int logico = 50;
-  public static final int Numero = 54;
+  public static final int Numero = 57;
   public static final int led = 28;
   public static final int verdadero = 45;
-  public static final int Tiempo = 53;
+  public static final int Tiempo = 56;
   public static final int error = 1;
-  public static final int Cor_c = 63;
+  public static final int Cor_c = 66;
   public static final int bloque = 3;
-  public static final int Cor_a = 62;
+  public static final int Cor_a = 65;
   public static final int led_panel = 29;
   public static final int tiempo = 43;
-  public static final int Diferente = 72;
+  public static final int Diferente = 75;
   public static final int si = 41;
   public static final int entero = 48;
   public static final int selector = 40;
   public static final int izquierda = 27;
-  public static final int Asignacion_s = 65;
+  public static final int Asignacion_s = 68;
   public static final int salir = 38;
   public static final int como = 5;
   public static final int hacer = 21;
-  public static final int Identificador = 51;
-  public static final int Punto_c = 56;
+  public static final int Identificador = 54;
   public static final int fin_var = 18;
-  public static final int Mayor_i = 73;
-  public static final int Par_c = 59;
-  public static final int Igual = 64;
-  public static final int Par_a = 58;
+  public static final int Mayor_i = 76;
+  public static final int Par_c = 62;
+  public static final int Igual = 67;
+  public static final int Par_a = 61;
   public static final int min = 33;
   public static final int apagar = 2;
-  public static final int Decimal = 52;
+  public static final int Decimal = 55;
   public static final int intensidad = 26;
   public static final String[] terminalNames = new String[] {
   "EOF",
@@ -136,12 +139,15 @@ public class sym {
   "entero",
   "texto",
   "logico",
+  "y",
+  "no",
+  "o",
   "Identificador",
   "Decimal",
   "Tiempo",
   "Numero",
   "Texto",
-  "Punto_c",
+  "PUNTO_COMA",
   "DosPuntos",
   "Par_a",
   "Par_c",

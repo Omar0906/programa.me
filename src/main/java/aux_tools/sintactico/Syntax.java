@@ -32,7 +32,7 @@ public class Syntax extends java_cup.runtime.lr_parser {
   /** Production table. */
   protected static final short _production_table[][] = 
     unpackFromStrings(new String[] {
-    "\000\046\000\002\002\004\000\002\002\007\000\002\003" +
+    "\000\061\000\002\002\004\000\002\002\007\000\002\003" +
     "\005\000\002\004\005\000\002\005\004\000\002\005\005" +
     "\000\002\005\003\000\002\007\007\000\002\007\007\000" +
     "\002\007\007\000\002\007\007\000\002\007\007\000\002" +
@@ -43,7 +43,11 @@ public class Syntax extends java_cup.runtime.lr_parser {
     "\006\004\000\002\006\003\000\002\012\005\000\002\013" +
     "\005\000\002\013\005\000\002\013\003\000\002\014\005" +
     "\000\002\014\005\000\002\014\003\000\002\015\005\000" +
-    "\002\015\003\000\002\015\003\000\002\015\003" });
+    "\002\015\003\000\002\015\003\000\002\015\003\000\002" +
+    "\016\005\000\002\016\005\000\002\016\005\000\002\016" +
+    "\005\000\002\016\005\000\002\016\005\000\002\016\005" +
+    "\000\002\016\005\000\002\016\003\000\002\016\003\000" +
+    "\002\016\003" });
 
   /** Access to production table. */
   public short[][] production_table() {return _production_table;}
@@ -51,69 +55,69 @@ public class Syntax extends java_cup.runtime.lr_parser {
   /** Parse-action table. */
   protected static final short[][] _action_table = 
     unpackFromStrings(new String[] {
-    "\000\135\000\004\032\004\001\002\000\004\065\007\001" +
+    "\000\135\000\004\032\004\001\002\000\004\070\007\001" +
     "\002\000\004\002\006\001\002\000\004\002\001\001\002" +
     "\000\004\033\010\001\002\000\004\010\046\001\002\000" +
     "\004\005\013\001\002\000\004\023\043\001\002\000\004" +
-    "\065\016\001\002\000\006\060\uffe7\065\uffe7\001\002\000" +
-    "\006\060\042\065\016\001\002\000\004\103\017\001\002" +
-    "\000\012\065\025\066\026\070\020\074\022\001\002\000" +
-    "\020\060\uffde\065\uffde\075\uffde\104\uffde\105\uffde\106\uffde" +
-    "\107\uffde\001\002\000\020\060\uffe0\065\uffe0\075\uffe0\104" +
-    "\uffe0\105\uffe0\106\uffe0\107\uffe0\001\002\000\012\065\025" +
-    "\066\026\070\020\074\022\001\002\000\020\060\uffe3\065" +
-    "\uffe3\075\uffe3\104\uffe3\105\uffe3\106\032\107\033\001\002" +
-    "\000\012\060\uffe6\065\uffe6\104\030\105\027\001\002\000" +
-    "\020\060\uffdc\065\uffdc\075\uffdc\104\uffdc\105\uffdc\106\uffdc" +
-    "\107\uffdc\001\002\000\020\060\uffdd\065\uffdd\075\uffdd\104" +
-    "\uffdd\105\uffdd\106\uffdd\107\uffdd\001\002\000\012\065\025" +
-    "\066\026\070\020\074\022\001\002\000\012\065\025\066" +
-    "\026\070\020\074\022\001\002\000\020\060\uffe5\065\uffe5" +
-    "\075\uffe5\104\uffe5\105\uffe5\106\032\107\033\001\002\000" +
-    "\012\065\025\066\026\070\020\074\022\001\002\000\012" +
-    "\065\025\066\026\070\020\074\022\001\002\000\020\060" +
-    "\uffe1\065\uffe1\075\uffe1\104\uffe1\105\uffe1\106\uffe1\107\uffe1" +
-    "\001\002\000\020\060\uffe2\065\uffe2\075\uffe2\104\uffe2\105" +
-    "\uffe2\106\uffe2\107\uffe2\001\002\000\020\060\uffe4\065\uffe4" +
-    "\075\uffe4\104\uffe4\105\uffe4\106\032\107\033\001\002\000" +
-    "\010\075\040\104\030\105\027\001\002\000\020\060\uffdf" +
-    "\065\uffdf\075\uffdf\104\uffdf\105\uffdf\106\uffdf\107\uffdf\001" +
-    "\002\000\006\060\uffe8\065\uffe8\001\002\000\004\023\ufffe" +
+    "\070\016\001\002\000\006\060\uffe7\070\uffe7\001\002\000" +
+    "\006\060\042\070\016\001\002\000\004\106\017\001\002" +
+    "\000\012\070\025\071\026\073\020\077\022\001\002\000" +
+    "\020\060\uffde\070\uffde\100\uffde\107\uffde\110\uffde\111\uffde" +
+    "\112\uffde\001\002\000\020\060\uffe0\070\uffe0\100\uffe0\107" +
+    "\uffe0\110\uffe0\111\uffe0\112\uffe0\001\002\000\012\070\025" +
+    "\071\026\073\020\077\022\001\002\000\020\060\uffe3\070" +
+    "\uffe3\100\uffe3\107\uffe3\110\uffe3\111\032\112\033\001\002" +
+    "\000\012\060\uffe6\070\uffe6\107\030\110\027\001\002\000" +
+    "\020\060\uffdc\070\uffdc\100\uffdc\107\uffdc\110\uffdc\111\uffdc" +
+    "\112\uffdc\001\002\000\020\060\uffdd\070\uffdd\100\uffdd\107" +
+    "\uffdd\110\uffdd\111\uffdd\112\uffdd\001\002\000\012\070\025" +
+    "\071\026\073\020\077\022\001\002\000\012\070\025\071" +
+    "\026\073\020\077\022\001\002\000\020\060\uffe5\070\uffe5" +
+    "\100\uffe5\107\uffe5\110\uffe5\111\032\112\033\001\002\000" +
+    "\012\070\025\071\026\073\020\077\022\001\002\000\012" +
+    "\070\025\071\026\073\020\077\022\001\002\000\020\060" +
+    "\uffe1\070\uffe1\100\uffe1\107\uffe1\110\uffe1\111\uffe1\112\uffe1" +
+    "\001\002\000\020\060\uffe2\070\uffe2\100\uffe2\107\uffe2\110" +
+    "\uffe2\111\uffe2\112\uffe2\001\002\000\020\060\uffe4\070\uffe4" +
+    "\100\uffe4\107\uffe4\110\uffe4\111\032\112\033\001\002\000" +
+    "\010\100\040\107\030\110\027\001\002\000\020\060\uffdf" +
+    "\070\uffdf\100\uffdf\107\uffdf\110\uffdf\111\uffdf\112\uffdf\001" +
+    "\002\000\006\060\uffe8\070\uffe8\001\002\000\004\023\ufffe" +
     "\001\002\000\004\002\000\001\002\000\006\010\130\024" +
-    "\127\001\002\000\004\010\046\001\002\000\004\065\050" +
+    "\127\001\002\000\004\010\046\001\002\000\004\070\050" +
     "\001\002\000\006\010\ufffb\024\ufffb\001\002\000\004\007" +
     "\051\001\002\000\030\012\061\036\064\045\054\055\063" +
-    "\061\057\062\062\063\060\064\053\066\052\067\055\071" +
-    "\056\001\002\000\004\072\123\001\002\000\006\072\115" +
-    "\103\116\001\002\000\006\072\112\103\113\001\002\000" +
-    "\004\072\111\001\002\000\004\072\110\001\002\000\006" +
-    "\072\104\103\105\001\002\000\004\103\101\001\002\000" +
-    "\006\072\076\103\077\001\002\000\004\103\073\001\002" +
-    "\000\004\103\070\001\002\000\006\072\065\103\066\001" +
-    "\002\000\006\010\ufff4\024\ufff4\001\002\000\004\072\067" +
-    "\001\002\000\006\010\uffec\024\uffec\001\002\000\004\067" +
-    "\071\001\002\000\004\072\072\001\002\000\006\010\uffeb" +
-    "\024\uffeb\001\002\000\004\070\074\001\002\000\004\072" +
+    "\061\057\062\062\063\060\064\053\071\052\072\055\074" +
+    "\056\001\002\000\004\075\123\001\002\000\006\075\115" +
+    "\106\116\001\002\000\006\075\112\106\113\001\002\000" +
+    "\004\075\111\001\002\000\004\075\110\001\002\000\006" +
+    "\075\104\106\105\001\002\000\004\106\101\001\002\000" +
+    "\006\075\076\106\077\001\002\000\004\106\073\001\002" +
+    "\000\004\106\070\001\002\000\006\075\065\106\066\001" +
+    "\002\000\006\010\ufff4\024\ufff4\001\002\000\004\075\067" +
+    "\001\002\000\006\010\uffec\024\uffec\001\002\000\004\072" +
+    "\071\001\002\000\004\075\072\001\002\000\006\010\uffeb" +
+    "\024\uffeb\001\002\000\004\073\074\001\002\000\004\075" +
     "\075\001\002\000\006\010\ufff2\024\ufff2\001\002\000\006" +
-    "\010\ufff6\024\ufff6\001\002\000\004\072\100\001\002\000" +
-    "\006\010\uffee\024\uffee\001\002\000\004\071\102\001\002" +
-    "\000\004\072\103\001\002\000\006\010\uffef\024\uffef\001" +
-    "\002\000\006\010\ufffa\024\ufffa\001\002\000\004\066\106" +
-    "\001\002\000\004\072\107\001\002\000\006\010\ufff1\024" +
+    "\010\ufff6\024\ufff6\001\002\000\004\075\100\001\002\000" +
+    "\006\010\uffee\024\uffee\001\002\000\004\074\102\001\002" +
+    "\000\004\075\103\001\002\000\006\010\uffef\024\uffef\001" +
+    "\002\000\006\010\ufffa\024\ufffa\001\002\000\004\071\106" +
+    "\001\002\000\004\075\107\001\002\000\006\010\ufff1\024" +
     "\ufff1\001\002\000\006\010\ufff7\024\ufff7\001\002\000\006" +
     "\010\ufff3\024\ufff3\001\002\000\006\010\ufff5\024\ufff5\001" +
-    "\002\000\004\072\114\001\002\000\006\010\uffed\024\uffed" +
+    "\002\000\004\075\114\001\002\000\006\010\uffed\024\uffed" +
     "\001\002\000\006\010\ufff8\024\ufff8\001\002\000\006\022" +
-    "\121\057\117\001\002\000\004\072\uffea\001\002\000\004" +
-    "\072\122\001\002\000\004\072\uffe9\001\002\000\006\010" +
+    "\121\057\117\001\002\000\004\075\uffea\001\002\000\004" +
+    "\075\122\001\002\000\004\075\uffe9\001\002\000\006\010" +
     "\ufff0\024\ufff0\001\002\000\006\010\ufff9\024\ufff9\001\002" +
     "\000\004\010\046\001\002\000\006\010\ufffd\024\ufffd\001" +
     "\002\000\006\010\ufffc\024\ufffc\001\002\000\004\005\uffff" +
-    "\001\002\000\004\065\131\001\002\000\004\007\132\001" +
+    "\001\002\000\004\070\131\001\002\000\004\007\132\001" +
     "\002\000\022\012\135\036\137\045\136\061\133\064\134" +
-    "\066\052\067\055\071\056\001\002\000\004\072\104\001" +
-    "\002\000\004\072\115\001\002\000\004\072\076\001\002" +
-    "\000\004\072\112\001\002\000\004\072\065\001\002" });
+    "\071\052\072\055\074\056\001\002\000\004\075\104\001" +
+    "\002\000\004\075\115\001\002\000\004\075\076\001\002" +
+    "\000\004\075\112\001\002\000\004\075\065\001\002" });
 
   /** Access to parse-action table. */
   public short[][] action_table() {return _action_table;}
@@ -192,10 +196,13 @@ public class Syntax extends java_cup.runtime.lr_parser {
   public int error_sym() {return 1;}
 
 
- 
+ //Codigo del usuario
     private Editor editor;
     private Symbol s;
     public void syntax_error(Symbol s){
+        this.s = s;
+    }
+    public void unrecovered_syntax_error(Symbol s) throws java.lang.Exception{ 
         this.s = s;
     }
     public Symbol getS(){
@@ -245,7 +252,7 @@ class CUP$Syntax$actions {
           case 1: // INICIO ::= inicio_programa Identificador BLOQUE_DECLARACION BLOQUE_CODIGO fin_programa 
             {
               Object RESULT =null;
-
+		System.out.println("Inicio de programa");
               CUP$Syntax$result = parser.getSymbolFactory().newSymbol("INICIO",0, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-4)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
             }
           return CUP$Syntax$result;
@@ -296,7 +303,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 7: // DECLARACION ::= definir Identificador como decimal Punto_c 
+          case 7: // DECLARACION ::= definir Identificador como decimal PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -305,7 +312,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 8: // DECLARACION ::= definir Identificador como Decimal Punto_c 
+          case 8: // DECLARACION ::= definir Identificador como Decimal PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -314,7 +321,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 9: // DECLARACION ::= definir Identificador como logico Punto_c 
+          case 9: // DECLARACION ::= definir Identificador como logico PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -323,7 +330,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 10: // DECLARACION ::= definir Identificador como Texto Punto_c 
+          case 10: // DECLARACION ::= definir Identificador como Texto PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -332,7 +339,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 11: // DECLARACION ::= definir Identificador como display Punto_c 
+          case 11: // DECLARACION ::= definir Identificador como display PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -341,7 +348,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 12: // DECLARACION ::= definir Identificador como motor Punto_c 
+          case 12: // DECLARACION ::= definir Identificador como motor PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -350,7 +357,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 13: // DECLARACION ::= definir Identificador como led Punto_c 
+          case 13: // DECLARACION ::= definir Identificador como led PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -359,7 +366,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 14: // DECLARACION ::= definir Identificador como Tiempo Punto_c 
+          case 14: // DECLARACION ::= definir Identificador como Tiempo PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -368,7 +375,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 15: // DECLARACION_A ::= definir Identificador como entero Asignacion_s Numero Punto_c 
+          case 15: // DECLARACION_A ::= definir Identificador como entero Asignacion_s Numero PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -377,7 +384,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 16: // DECLARACION_A ::= definir Identificador como decimal Asignacion_s Decimal Punto_c 
+          case 16: // DECLARACION_A ::= definir Identificador como decimal Asignacion_s Decimal PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -386,7 +393,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 17: // DECLARACION_A ::= definir Identificador como logico Asignacion_s VALOR_LOGICO Punto_c 
+          case 17: // DECLARACION_A ::= definir Identificador como logico Asignacion_s VALOR_LOGICO PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -395,7 +402,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 18: // DECLARACION_A ::= definir Identificador como texto Asignacion_s Texto Punto_c 
+          case 18: // DECLARACION_A ::= definir Identificador como texto Asignacion_s Texto PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -404,7 +411,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 19: // DECLARACION_A ::= definir Identificador como display Asignacion_s Punto_c 
+          case 19: // DECLARACION_A ::= definir Identificador como display Asignacion_s PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -413,7 +420,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 20: // DECLARACION_A ::= definir Identificador como motor Asignacion_s Punto_c 
+          case 20: // DECLARACION_A ::= definir Identificador como motor Asignacion_s PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -422,7 +429,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 21: // DECLARACION_A ::= definir Identificador como led Asignacion_s Punto_c 
+          case 21: // DECLARACION_A ::= definir Identificador como led Asignacion_s PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -431,7 +438,7 @@ class CUP$Syntax$actions {
           return CUP$Syntax$result;
 
           /*. . . . . . . . . . . . . . . . . . . .*/
-          case 22: // DECLARACION_A ::= definir Identificador como tiempo Asignacion_s Tiempo Punto_c 
+          case 22: // DECLARACION_A ::= definir Identificador como tiempo Asignacion_s Tiempo PUNTO_COMA 
             {
               Object RESULT =null;
 
@@ -571,6 +578,105 @@ class CUP$Syntax$actions {
               Object RESULT =null;
 
               CUP$Syntax$result = parser.getSymbolFactory().newSymbol("FACTOR",11, ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
+            }
+          return CUP$Syntax$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 38: // CONDICION ::= Identificador Igual falso 
+            {
+              Object RESULT =null;
+
+              CUP$Syntax$result = parser.getSymbolFactory().newSymbol("CONDICION",12, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
+            }
+          return CUP$Syntax$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 39: // CONDICION ::= Identificador Igual verdadero 
+            {
+              Object RESULT =null;
+
+              CUP$Syntax$result = parser.getSymbolFactory().newSymbol("CONDICION",12, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
+            }
+          return CUP$Syntax$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 40: // CONDICION ::= verdadero Igual Identificador 
+            {
+              Object RESULT =null;
+
+              CUP$Syntax$result = parser.getSymbolFactory().newSymbol("CONDICION",12, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
+            }
+          return CUP$Syntax$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 41: // CONDICION ::= falso Igual Identificador 
+            {
+              Object RESULT =null;
+
+              CUP$Syntax$result = parser.getSymbolFactory().newSymbol("CONDICION",12, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
+            }
+          return CUP$Syntax$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 42: // CONDICION ::= Identificador OP_REL Numero 
+            {
+              Object RESULT =null;
+
+              CUP$Syntax$result = parser.getSymbolFactory().newSymbol("CONDICION",12, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
+            }
+          return CUP$Syntax$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 43: // CONDICION ::= Numero OP_REL Identificador 
+            {
+              Object RESULT =null;
+
+              CUP$Syntax$result = parser.getSymbolFactory().newSymbol("CONDICION",12, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
+            }
+          return CUP$Syntax$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 44: // CONDICION ::= Identificador OP_REL Identificador 
+            {
+              Object RESULT =null;
+
+              CUP$Syntax$result = parser.getSymbolFactory().newSymbol("CONDICION",12, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
+            }
+          return CUP$Syntax$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 45: // CONDICION ::= Numero OP_REL Numero 
+            {
+              Object RESULT =null;
+
+              CUP$Syntax$result = parser.getSymbolFactory().newSymbol("CONDICION",12, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
+            }
+          return CUP$Syntax$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 46: // CONDICION ::= verdadero 
+            {
+              Object RESULT =null;
+
+              CUP$Syntax$result = parser.getSymbolFactory().newSymbol("CONDICION",12, ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
+            }
+          return CUP$Syntax$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 47: // CONDICION ::= falso 
+            {
+              Object RESULT =null;
+
+              CUP$Syntax$result = parser.getSymbolFactory().newSymbol("CONDICION",12, ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
+            }
+          return CUP$Syntax$result;
+
+          /*. . . . . . . . . . . . . . . . . . . .*/
+          case 48: // CONDICION ::= Identificador 
+            {
+              Object RESULT =null;
+
+              CUP$Syntax$result = parser.getSymbolFactory().newSymbol("CONDICION",12, ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
             }
           return CUP$Syntax$result;
 

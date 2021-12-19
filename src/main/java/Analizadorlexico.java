@@ -1,8 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package aux_tools.lexico;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,9 +12,6 @@ public class Analizadorlexico {
     private static final String ruta = System.getProperty("user.dir");
     private static final String directoriolexico = "/src/main/java/aux_tools/lexico/";
     private static final String directoriosintactico = "/src/main/java/aux_tools/sintactico/";
-
-    public Analizadorlexico(String entrada) {
-    }
 
     public static void main(String[] args) throws Exception {
         System.out.println("Creando Analizador Léxico");
@@ -56,12 +48,12 @@ public class Analizadorlexico {
         try
         {
             jflex.Main.generate(path);
-
+            System.out.println("Creado el analizador léxico del analizador sintáctico");
             java_cup.Main.main(ruta1);
-           
+
             Path rutaSym = Paths.get(ruta.replace("\\", "/") + directoriosintactico + "sym.java");
             Path rutaSin = Paths.get(ruta.replace("\\", "/") + directoriosintactico + "Syntax.java");
-            
+
             if (Files.exists(rutaSym))
             {
                 Files.delete(rutaSym);
