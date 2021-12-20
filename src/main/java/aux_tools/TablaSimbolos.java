@@ -63,6 +63,7 @@ public class TablaSimbolos {
     }
     public void ubicarToken(String t,String tipo) {
         if(this.ListaTokens.isEmpty()){
+            return;
         }
         for (int l = 0; l < ListaTokens.size();l++) {
             if (ListaTokens.get(l).getLexema().equals(t)) {
@@ -72,6 +73,7 @@ public class TablaSimbolos {
     }
     public void ubicarToken(String t,String tipo,Object valor) {
         if(this.ListaTokens.isEmpty()){
+            return;
         }
         for (int l = 0; l < ListaTokens.size();l++) {
             if (ListaTokens.get(l).getLexema().equals(t)) {

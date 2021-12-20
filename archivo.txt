@@ -1,6 +1,9 @@
 inicio_programa programa_Ejemplo
 	inicio_var
 		definir x como entero = 23;
+		definir cas como decimal = 23.23;
+		definir mensaje como texto = "mensaje aviso";
+		definir ban como logico;
 	fin_var
 	inicio_bloque
 			decrementar x;
@@ -10,6 +13,10 @@ inicio_programa programa_Ejemplo
 			repetir 3 veces{
 				mostrar "hola";
 			}
+			si(x<=32){
+				x = 34;
+			}
+			facil_repetir( wsd,x=x+2)
 			mientras (2<id2){
 				x = s + l *wd;
 			}
