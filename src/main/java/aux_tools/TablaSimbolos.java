@@ -6,13 +6,14 @@ package aux_tools;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 /**
  *
  * @author turis
  */
 public class TablaSimbolos {
-     private ArrayList<Simbolo> ListaTokens;
+     public ArrayList<Simbolo> ListaTokens;
 
     public TablaSimbolos() {
         this.ListaTokens = new ArrayList<Simbolo>();
@@ -20,6 +21,12 @@ public class TablaSimbolos {
 
     public void addToken(Simbolo t) {
         if (!buscarToken(t)) {
+            this.ListaTokens.add(t);
+            sortTabla();
+        }
+    }
+    public void updateToken(Simbolo t) {
+        if (buscarToken(t)) {
             this.ListaTokens.add(t);
             sortTabla();
         }
@@ -42,6 +49,36 @@ public class TablaSimbolos {
             }
         }
         return false;
+    }
+    public Boolean buscarToken(String t) {
+        if(this.ListaTokens.isEmpty()){
+            return false;
+        }
+        for (Simbolo tokens : this.ListaTokens) {
+            if (tokens.getLexema().equals(t)) {
+                return true;
+            }
+        }
+        return false;
+    }
+    public void ubicarToken(String t,String tipo) {
+        if(this.ListaTokens.isEmpty()){
+        }
+        for (int l = 0; l < ListaTokens.size();l++) {
+            if (ListaTokens.get(l).getLexema().equals(t)) {
+                ListaTokens.get(l).setTipo(tipo);
+            }
+        }
+    }
+    public void ubicarToken(String t,String tipo,Object valor) {
+        if(this.ListaTokens.isEmpty()){
+        }
+        for (int l = 0; l < ListaTokens.size();l++) {
+            if (ListaTokens.get(l).getLexema().equals(t)) {
+                ListaTokens.get(l).setTipo(tipo);
+                ListaTokens.get(l).setValor(valor);
+            }
+        }
     }
     public ArrayList<Simbolo> verTablaSimbolos(){
         return this.ListaTokens;

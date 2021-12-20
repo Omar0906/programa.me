@@ -47,6 +47,8 @@ StringCharacter = [^\r\n\"\\]
     "decimal" {return new Symbol(sym.decimal,(int) yychar,yyline,yytext());} 
     "entero" {return new Symbol(sym.entero,(int) yychar,yyline,yytext());} 
     "texto" {return new Symbol(sym.texto,(int) yychar,yyline,yytext());} 
+    "logico" {return new Symbol(sym.logico,(int) yychar,yyline,yytext());} 
+    
     "tiempo" {return new Symbol(sym.tiempo,(int) yychar,yyline,yytext());} 
     "rojo" {return new Symbol(sym.rojo,(int) yychar,yyline,yytext());} 
     "verde" {return new Symbol(sym.verde,(int) yychar,yyline,yytext());} 
@@ -135,7 +137,7 @@ StringCharacter = [^\r\n\"\\]
     "<=" {return new Symbol(sym.Menor_i,(int) yychar,yyline,yytext());}
 
     {D}+ {
-        return new Symbol(sym.Numero,(int) yychar,yyline,yytext());
+        return new Symbol(sym.Numero,(int) yychar,yyline,new Integer(yytext()));
     }
     
     {D}+ " " ("seg"|"hr"|"min") {
@@ -145,29 +147,10 @@ StringCharacter = [^\r\n\"\\]
         this.msg = "Código de error 5: Formato de tiempo incorrecto, debe estar separado por un espacio ";  return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
     }
     
-    {D}+("." [0-9]+)? {
-        return new Symbol(sym.Decimal,(int) yychar,yyline,yytext());
-    }
-    {D} ({D}|.)+ ({L}|{D}) {
-    this.msg = "Código de error 3: Formato de número incorrecto ";  return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
-    }
-    "." {D}+ {
-    this.msg = "Código de error 3: Formato de número incorrecto ";  return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
+    ([0-9]+ "." {D}) {
+        return new Symbol(sym.Decimal,(int) yychar,yyline,new Double(yytext()));
     }
     
-    {D} ({L}|".")+ ("."+ [0-9]+) {
-        this.msg = "Código de error 2: Formato de número decimal incorrecto ";  return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
-    }
-    {D}+ "." {
-        this.msg = "Código de error 2: Formato de número decimal incorrecto ";  return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
-    }
-    {D} ({L}|{D})+ ("." [0-9]+) (("." ([0-9]+|"."+))+) {
-            this.msg = "Código de error 2: Formato de número decimal incorrecto ";  return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
-    }
-    
-    {D} ({L}|.)+ ("." ([0-9]+|{L}+|"."+)+) {
-        this.msg = "Código de error 2: Formato de número decimal incorrecto ";  return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
-    }
     {L}({L}|{D})* {return new Symbol(sym.Identificador,(int) yychar,yyline,yytext());}
     
     //"." (prender|girar|apagar|estado) {return new Symbol(sym.Propiedad,(int) yychar,yyline,yytext());}
@@ -179,7 +162,7 @@ StringCharacter = [^\r\n\"\\]
   {CommentContent} { }
 }
 <STRING> {
-  "\""                             { yybegin(YYINITIAL);string.append("\"");return new Symbol(sym.Texto,(int) yychar,yyline,string);}
+  "\""                             { yybegin(YYINITIAL);string.append("\"");return new Symbol(sym.Texto,(int) yychar,yyline,string.toString());}
   
   {StringCharacter}+             { string.append( yytext() ); }
   

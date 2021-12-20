@@ -126,24 +126,24 @@ StringCharacter = [^\r\n\"\\]
     {D}+("." [0-9]+)? {
         lexeme=yytext();linea = this.yyline+1; return Decimal;
     }
-    {D} ({D}|.)+ ({L}|{D}) {
-    this.msg = "Código de error 3: Formato de número incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+    {D} ({D}|{L})+ ({L}|{D}) {
+    this.msg = "Código de error 6: Cadena inválida "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
     }
     "." {D}+ {
-    this.msg = "Código de error 3: Formato de número incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+    this.msg = "Código de error 3: Formato de número decimal incorrecto, debe tener al menos un dígito antes del punto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
     }
     
     {D} ({L}|".")+ ("."+ [0-9]+) {
-        this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+        this.msg = "Código de error 6: Cadena inválida "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
     }
     {D}+ "." {
         this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
     }
     {D} ({L}|{D})+ ("." [0-9]+) (("." ([0-9]+|"."+))+) {
-            this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+            this.msg = "Código de error 6: Cadena inválida "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
     }
     
-    {D} ({L}|.)+ ("." ([0-9]+|{L}+|"."+)+) {
+    {D}+ ("." ([0-9]+|"."+)+) {
         this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
     }
     {ID} {lexeme=yytext(); linea = this.yyline+1; return Identificador;}

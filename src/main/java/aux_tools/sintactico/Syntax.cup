@@ -19,14 +19,17 @@ parser code
     }
 :};
 //Terminales
+terminal Integer Numero;
+terminal Double Decimal;
+terminal String Texto;
 terminal apagar, inicio_bloque, caso, como, definir, derecha, display, facil_bloque, facil_hacer_mientras, facil_mientras,
     facil_repetir, facil_selector, facil_si, facil_sino, falso, fin_programa, fin_var, girar, grados, hacer, hr, incluir, 
     inicio_programa, inicio_var, intensidad, izquierda, led, led_rgb, led_semaforo, mientras, min, mostrar, 
     motor,motor_electrico,motor_paso, prender, repetir, salir, seg, selector, si, sino, tiempo, veces, verdadero, fin_bloque,
     decimal,entero,texto,logico, y, no, o,incrementar, decrementar,
-    Identificador, Decimal, Tiempo, Numero, Texto, PUNTO_COMA, DosPuntos, Par_a, Par_c,Lla_a,Lla_c,Cor_a,Cor_c,Igual,Asignacion_s,
+    Identificador, Tiempo, PUNTO_COMA, DosPuntos, Par_a, Par_c,Lla_a,Lla_c,Cor_a,Cor_c,Igual,Asignacion_s,
     Suma,Resta,Mul,Div,Menor,Mayor,Diferente,Mayor_i,Menor_i,
-    ERROR,PUNTO,COMA,encender,visualizar,para,
+    ERROR,PUNTO,COMA,visualizar,para,
     rojo,verde,azul,arreglo,arregloBi;
 //No terminales
 non terminal INICIO,BLOQUE_DECLARACION,BLOQUE_CODIGO, DECLARACIONES, CODIGO,
@@ -40,55 +43,129 @@ non terminal INICIO,BLOQUE_DECLARACION,BLOQUE_CODIGO, DECLARACIONES, CODIGO,
     BLOQUE_SELECTOR,CABEZA,
     MANIPULAR_COMPONENTE,TIPO_DATO,TIPO_VALOR;
 //Precedencia de operadores
-precedence left o,fin_programa;
+/*precedence left o,fin_programa;
 precedence left y;
 precedence right no;
 precedence left Igual,Menor,Mayor,Menor_i,Mayor_i,Diferente;
 precedence left Suma, Resta;
-precedence left Mul, Div,inicio_programa,Identificador; 
+precedence left Mul, Div,inicio_programa,Identificador; */
 //Producción con la que iniciar
 start with INICIO;
 
 INICIO ::=
-     CABEZA BLOQUE_DECLARACION BLOQUE_CODIGO fin_programa
+     CABEZA BLOQUE_DECLARACION BLOQUE_CODIGO fin_programa {:System.out.println("Programa Correcto!!!!!");:}
 ;
 CABEZA ::= 
     Identificador:s {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al escribir inicio_programa. Tienes " + s);:} Identificador |
-    inicio_programa Identificador |
-    inicio_programa error:s {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te falta añadirle un nombre al programa");:} |
+    inicio_programa Identificador:id{:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),"Nombre del programa");
+            System.out.println("Inicio y nombre correcto");
+        }:} |
+    inicio_programa error:s {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te falta añadirle un nombre al programa");:} 
     ;
-BLOQUE_DECLARACION ::=  inicio_var DECLARACIONES fin_var  |
-    Identificador:s
-        {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al iniciar el bloque de las variables. Esta mal escrito inicio_var");:}
-    DECLARACIONES fin_var |
-    inicio_var DECLARACIONES Identificador:s {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> El bloque de variables debe termina con fin_var.");:}
+BLOQUE_DECLARACION ::=  inicio_var DECLARACIONES fin_var {:System.out.println("Bloque declaracion correcto");:}|
+    Identificador:s DECLARACIONES fin_var {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al escribir inicio_var. Tienes " + s);:} |
+    inicio_var DECLARACIONES DECLARACION:s fin_var{:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al detectar el fin_var.");:} |
+    inicio_var DECLARACIONES DECLARACION_A:s fin_var{:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al detectar el fin_var.");:}
 ;
-BLOQUE_CODIGO ::= inicio_bloque SENTENCIA fin_bloque |
-    Identificador:s 
-        {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al iniciar el bloque de código. Debe iniciar con la palabra inicio_bloque, revisa si esta bien escrito.");:}
-    SENTENCIA fin_bloque |
-    inicio_bloque SENTENCIA Identificador:s
-         {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al terminar el bloque de código. Debe finalizar con la palabra fin_bloque, revisa si esta bien escrito.");:} |    
+DECLARACIONES ::= DECLARACIONES DECLARACION PUNTO_COMA| 
+                        DECLARACION PUNTO_COMA|
+                        DECLARACIONES DECLARACION_A PUNTO_COMA|
+                        DECLARACION_A PUNTO_COMA|
+                        error:s PUNTO_COMA {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Esta mal estructurada la declaración\n----> ¿Revisaste si le pusiste el ;?\n----> ¿Revisaste si estan bien escritas las palabras reservadas?");:}
 ;
-DECLARACIONES ::= DECLARACIONES DECLARACION | 
-                        DECLARACION |
-                        DECLARACIONES DECLARACION_A |
-                        DECLARACION_A 
+DECLARACION ::= definir Identificador:id como entero:td
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+        }
+        System.out.println("Se encontro una declaracion de un entero");:}|
+    definir Identificador:id como decimal:td
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+        }
+        System.out.println("Se encontro una declaracion de un decimal");:}|
+    definir Identificador:id como logico:td
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+        }
+        System.out.println("Se encontro una declaracion de un logico");:}|
+    definir Identificador:id como texto:td
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+        }
+        System.out.println("Se encontro una declaracion de un texto");:}|
+    definir Identificador:id como display:td
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+        }
+        System.out.println("Se encontro una declaracion de un display");:}|
+    definir Identificador:id como motor:td
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+        }
+        System.out.println("Se encontro una declaracion de un motor");:}|
+    definir Identificador:id como led:td
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+        }
+        System.out.println("Se encontro una declaracion de un led");:}|
+    definir Identificador:id como tiempo:td
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+        }
+        System.out.println("Se encontro una declaracion de un tiempo");:}|
+    definir Identificador:id como arreglo:td Cor_a Numero Cor_c
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+        }
+        System.out.println("Se encontro una declaracion de un arreglo");:}|
+    definir Identificador:id como arregloBi:td Cor_a Numero Cor_c  Cor_a Numero Cor_c
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+        }
+        System.out.println("Se encontro una declaracion de un arregloBi");:}
 ;
-TIPO_DATO ::= entero | decimal | logico | texto | display | motor | led | tiempo
+DECLARACION_A ::= definir Identificador:id como entero:td Asignacion_s Numero:val
+        {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),val);
+        }System.out.println("Se encontro una declaracion con asignacion de un entero");:}
+        |
+    definir Identificador:id como decimal:td Asignacion_s Decimal:val
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),val);
+        }System.out.println("Se encontro una declaracion con asignacion de un decimal");:}
+        |
+    definir Identificador:id como logico:td Asignacion_s verdadero:val
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),val);
+        }System.out.println("Se encontro una declaracion con asignacion de un logico");:}
+        |
+    definir Identificador:id como logico:td Asignacion_s falso:val
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),val);
+        }System.out.println("Se encontro una declaracion con asignacion de un logico");:}
+        |
+    definir Identificador:id como texto:td Asignacion_s Texto:val
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),val);
+        }System.out.println("Se encontro una declaracion con asignacion de un texto");:}
+        |
+    definir Identificador:id como tiempo:td Asignacion_s Tiempo:val
+    {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),val.toString());
+        }System.out.println("Se encontro una declaracion con asignacion de un tiempo");:}
 ;
-TIPO_VALOR ::= Numero | Decimal | VALOR_LOGICO | Texto | Tiempo
-;
-DECLARACION ::= definir Identificador como TIPO_DATO PUNTO_COMA |
-    definir Identificador como arreglo Cor_a Numero Cor_c PUNTO_COMA |
-    definir Identificador como arregloBi Cor_a Numero Cor_c Cor_a Numero Cor_c PUNTO_COMA
-;
-DECLARACION_A ::= definir Identificador como TIPO_DATO Asignacion_s TIPO_VALOR PUNTO_COMA |
-    definir Identificador como TIPO_DATO Asignacion_s TIPO_VALOR error:s {:editor.ERRORES.add("Falta un punto y coma " + sright);:}
-;
-VALOR_LOGICO ::= verdadero | falso
-;
-ASIGNACION ::= Identificador Asignacion_s EXPRESION PUNTO_COMA
+ASIGNACION ::= 
+    Identificador Asignacion_s Texto PUNTO_COMA {:System.out.println("Se ha encontrado ASIGNACION");:} |
+    Identificador Asignacion_s verdadero PUNTO_COMA {:System.out.println("Se ha encontrado ASIGNACION");:} |
+    Identificador Asignacion_s false PUNTO_COMA {:System.out.println("Se ha encontrado ASIGNACION");:} |
+    Identificador Asignacion_s EXPRESION PUNTO_COMA {:System.out.println("Se ha encontrado ASIGNACION");:} |
+    Identificador Asignacion_s  PUNTO_COMA {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te falto poner el valor a asignar");:} |
+    Identificador Texto PUNTO_COMA {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te falto poner el signo =");:} |
+    Identificador verdadero PUNTO_COMA {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te falto poner el signo =");:} |
+    Identificador falso PUNTO_COMA {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te falto poner el signo =");:} |
+    Identificador EXPRESION PUNTO_COMA {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te falto poner el signo =");:} |
+    error:s PUNTO_COMA {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> La asignación esta mal implementada");:}
 ;
 EXPRESION ::= EXPRESION Suma TERMINO |
     EXPRESION Resta TERMINO |
@@ -99,7 +176,7 @@ TERMINO ::= TERMINO Mul FACTOR |
     FACTOR
 ;
 FACTOR ::= Par_a EXPRESION Par_c |
-    Numero | Decimal | Identificador | Texto
+    Numero | Decimal | Identificador
 ;
 CONDICION ::= Identificador Igual falso |
     Identificador Igual verdadero |
@@ -116,33 +193,53 @@ CONDICION ::= Identificador Igual falso |
 OP_REL ::= Mayor_i | Menor_i | Diferente | Mayor | Menor;
 DIRECCION ::= izquierda | derecha
 ;
-FACIL_SENTENCIA ::= ASIGNACION PUNTO_COMA | METODO PUNTO_COMA
+BLOQUE_CODIGO ::=   
+         inicio_bloque SENTENCIA fin_bloque {:System.out.println("Se encontro un BLOQUE_CODIGO correcto");:}|
+         error:s fin_programa {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al escribir inicio_programa.\n----> ¿Revisaste si le pusiste el ;?\n----> ¿Revisaste si estan bien escritas las palabras reservadas?");:}
 ;
-METODO ::= incrementar Identificador |
-    decrementar Identificador |
+METODO ::= incrementar Identificador PUNTO_COMA{:System.out.println("\nEncontrado un incremento de id");:} |
+    incrementar Identificador error:s {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te falta el ;");
+        System.out.println("\nEncontrado un decremento de id");:} |
+    incrementar:s PUNTO_COMA{:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te faltó poner el identificador");:} |
+    decrementar Identificador PUNTO_COMA{:System.out.println("\nEncontrado un decremento de id");:} |
+    
+    decrementar Identificador error:s {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te falta el ;");
+        System.out.println("\nEncontrado un decremento de id");:} |
+    decrementar:s PUNTO_COMA{:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te faltó poner el identificador");:} |
     MOSTRAR_TEXTO |
-    MANIPULAR_COMPONENTE
+    MANIPULAR_COMPONENTE |
+    error:s PUNTO_COMA {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al escribir inicio_programa.\n----> ¿Revisaste si le pusiste el ;?\n----> ¿Revisaste si estan bien escritas las palabras reservadas?");:}
 ;
-MOSTRAR_TEXTO ::= mostrar Texto
+//mostrar "cadena"
+MOSTRAR_TEXTO ::= mostrar Texto PUNTO_COMA {:System.out.println("\nEncontrado mostrar texto");:} |
+    mostrar Identificador  PUNTO_COMA{:System.out.println("\nEncontrado mostrar texto");:} |
+    mostrar PUNTO_COMA:s{:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te faltó poner el identificador o al menos una cadena");:} |
+    mostrar error:s  PUNTO_COMA{:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Esta mal estructurada la instrucción. ¿Pusiste el ;? ¿No te saltaste el identificador?");:}
 ;
-MANIPULAR_COMPONENTE ::= Identificador PUNTO encender |
-    Identificador PUNTO apagar |
-    Identificador PUNTO encender PUNTO COLOR |
-    Identificador PUNTO girar PUNTO DIRECCION |
-    Identificador PUNTO girar PUNTO DIRECCION Par_a TIEMPO Par_c |
-    Identificador PUNTO visualizar Par_a TEXTO Par_c
+MANIPULAR_COMPONENTE ::=
+    
+    Identificador PUNTO error:s PUNTO_COMA{:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Esta mal escrita la función del componente.");:} |
+    Identificador PUNTO prender PUNTO_COMA {:System.out.println("\nEncontrado prender");:}|
+    Identificador PUNTO apagar PUNTO_COMA{:System.out.println("\nEncontrado apagar");:} |
+    Identificador PUNTO prender PUNTO COLOR  PUNTO_COMA{:System.out.println("\nEncontrado prender color");:}|
+    Identificador PUNTO girar PUNTO DIRECCION PUNTO_COMA{:System.out.println("\nEncontrado girar direccion");:}|
+    Identificador PUNTO girar PUNTO DIRECCION Par_a TIEMPO Par_c PUNTO_COMA{:System.out.println("\nEncontrado girar con tiempo");:}|
+    Identificador PUNTO girar PUNTO DIRECCION Par_a error:s Par_c PUNTO_COMA{:
+        editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Esta mal escrito el valor de tiempo. Recuerda que es un numero entero y ya sea seg, hr o min.");
+    System.out.println("\nEncontrado girar con tiempo");:}|
+    Identificador PUNTO visualizar Par_a TEXTO Par_c PUNTO_COMA {:System.out.println("\nEncontrado visualizar display");:}
 ;
 
 COLOR ::= rojo | verde | azul;
 TIEMPO ::= Tiempo | Identificador;
 TEXTO ::= Texto | Identificador;
 
-SENTENCIA ::= SENTENCIA FACIL_SENTENCIA |
-    FACIL_SENTENCIA |
-    SENTENCIA DECISION |
-    DECISION |
+SENTENCIA ::= SENTENCIA METODO |
+    METODO |
     SENTENCIA ASIGNACION |
     ASIGNACION |
+    SENTENCIA DECISION |
+    DECISION |
     SENTENCIA SENTENCIA_REPETIR |
     SENTENCIA_REPETIR |
     SENTENCIA SENTENCIA_FACIL_REPETIR |
@@ -152,28 +249,33 @@ SENTENCIA ::= SENTENCIA FACIL_SENTENCIA |
     SENTENCIA SENTENCIA_PARA|
     SENTENCIA_PARA |
     SENTENCIA SENTENCIA_SELECTOR |
-    SENTENCIA_SELECTOR
+    SENTENCIA_SELECTOR |
+    error:s {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> La sentencia esta mal estructurada. Revisala.");:}
 ;
 DECISION ::= SENTENCIA_SI | SENTENCIA_FACIL_SI
 ;
-SENTENCIA_SI ::= si Par_a CONDICION Par_c Lla_a SENTENCIA Lla_c |
-    si Par_a CONDICION Par_c Lla_a SENTENCIA Lla_c sino Lla_a SENTENCIA Lla_c
+SENTENCIA_SI ::= si Par_a CONDICION Par_c Lla_a SENTENCIA Lla_c {:System.out.println("Se ha encontrado SENTENCIA SI");:}|
+    si Par_a CONDICION Par_c Lla_a SENTENCIA Lla_c sino Lla_a SENTENCIA Lla_c {:System.out.println("Se ha encontrado SENTENCIA SI SINO");:}
 ;
-SENTENCIA_FACIL_SI ::= facil_si Par_a CONDICION Par_c FACIL_SENTENCIA |
-        facil_si Par_a CONDICION COMA FACIL_SENTENCIA Par_c Lla_a facil_sino Par_a FACIL_SENTENCIA Par_c Lla_c
+SENTENCIA_FACIL_SI ::= facil_si Par_a CONDICION Par_c FACIL_SENTENCIA {:System.out.println("Se ha encontrado FACIL SI");:} |
+        facil_si Par_a CONDICION COMA FACIL_SENTENCIA Par_c Lla_a facil_sino Par_a FACIL_SENTENCIA Par_c Lla_c {:System.out.println("Se ha encontrado FACIL SI SINO");:}
 ;
-SENTENCIA_REPETIR ::= repetir Numero veces Lla_a SENTENCIA Lla_c
+SENTENCIA_REPETIR ::= repetir Numero veces Lla_a SENTENCIA Lla_c {:System.out.println("Se ha encontrado REPETIR");:}
 ; 
-SENTENCIA_FACIL_REPETIR ::= facil_repetir Par_a Numero COMA FACIL_SENTENCIA Par_c
+SENTENCIA_FACIL_REPETIR ::= facil_repetir Par_a Numero COMA FACIL_SENTENCIA Par_c {:System.out.println("Se ha encontrado FACIL REPETIR");:}
 ;
-SENTENCIA_MIENTRAS ::= mientras Par_a CONDICION Par_c Lla_a SENTENCIA Lla_c 
+SENTENCIA_MIENTRAS ::= mientras Par_a CONDICION Par_c Lla_a SENTENCIA Lla_c {:System.out.println("Se ha encontrado MIENTRAS");:}
 ;
-SENTENCIA_PARA ::= para Par_a Identificador Asignacion_s Numero COMA incrementar Identificador COMA CONDICION Par_c Lla_a SENTENCIA Lla_c
+SENTENCIA_PARA ::= para Par_a Identificador Asignacion_s Numero COMA incrementar Identificador COMA CONDICION Par_c Lla_a SENTENCIA Lla_c {:System.out.println("Se ha encontrado PARA");:}
 ;
-SENTENCIA_SELECTOR ::= selector Par_a Identificador Par_c Lla_a BLOQUE_SELECTOR Lla_c
+SENTENCIA_SELECTOR ::= selector Par_a Identificador Par_c Lla_a BLOQUE_SELECTOR Lla_c {:System.out.println("Se ha encontrado SELECTOR");:}
 ;
 BLOQUE_SELECTOR ::= BLOQUE_SELECTOR Numero DosPuntos SENTENCIA salir PUNTO_COMA |
     Numero DosPuntos SENTENCIA salir PUNTO_COMA |
     BLOQUE_SELECTOR Texto DosPuntos SENTENCIA salir PUNTO_COMA |
-    Texto DosPuntos SENTENCIA salir PUNTO_COMA
+    Texto DosPuntos SENTENCIA salir PUNTO_COMA| 
+    BLOQUE_SELECTOR verdadero DosPuntos SENTENCIA salir PUNTO_COMA |
+    verdadero DosPuntos SENTENCIA salir PUNTO_COMA| 
+    BLOQUE_SELECTOR falso DosPuntos SENTENCIA salir PUNTO_COMA |
+    falso DosPuntos SENTENCIA salir PUNTO_COMA
 ;
