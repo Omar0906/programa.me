@@ -4,6 +4,9 @@ import mx.tectepic.programa.me.Editor;
 parser code
 {: //Codigo del usuario
     private Editor editor;
+    public void setEditor(Editor padre){
+        this.editor = padre;
+    }
     private Symbol s;
     public void syntax_error(Symbol s){
         this.s = s;
@@ -16,62 +19,76 @@ parser code
     }
 :};
 //Terminales
-terminal apagar, bloque, caso, como, definir, derecha, display, facil_bloque, facil_hacer_mientras, facil_mientras,
+terminal apagar, inicio_bloque, caso, como, definir, derecha, display, facil_bloque, facil_hacer_mientras, facil_mientras,
     facil_repetir, facil_selector, facil_si, facil_sino, falso, fin_programa, fin_var, girar, grados, hacer, hr, incluir, 
-    inicio_programa, inicio_var, intensidad, izquierda, led, led_panel, led_rgb, led_semaforo, mientras, min, mostrar, 
-    motor, prender, repetir, salir, seg, selector, si, sino, tiempo, veces, verdadero, fin_bloque,
-    decimal,entero,texto,logico, y, no, o,
+    inicio_programa, inicio_var, intensidad, izquierda, led, led_rgb, led_semaforo, mientras, min, mostrar, 
+    motor,motor_electrico,motor_paso, prender, repetir, salir, seg, selector, si, sino, tiempo, veces, verdadero, fin_bloque,
+    decimal,entero,texto,logico, y, no, o,incrementar, decrementar,
     Identificador, Decimal, Tiempo, Numero, Texto, PUNTO_COMA, DosPuntos, Par_a, Par_c,Lla_a,Lla_c,Cor_a,Cor_c,Igual,Asignacion_s,
     Suma,Resta,Mul,Div,Menor,Mayor,Diferente,Mayor_i,Menor_i,
-    ERROR;
+    ERROR,PUNTO,COMA,encender,visualizar,para,
+    rojo,verde,azul,arreglo,arregloBi;
 //No terminales
 non terminal INICIO,BLOQUE_DECLARACION,BLOQUE_CODIGO, DECLARACIONES, CODIGO,
     DECLARACION,DECLARACION_A,VALOR_LOGICO,ASIGNACION,EXPRESION,TERMINO,
-    FACTOR,CONDICION,OP_REL;
+    FACTOR,CONDICION,OP_REL,COMPONENTE,DIRECCION,PARAMETRO_DECIMAL,PARAMETRO_ENTERO,
+    FACIL_SENTENCIA,METODO,MOSTRAR_TEXTO,COLOR,TIEMPO,TEXTO,
+    SENTENCIA, DECISION,DECISION_FACIL,SENTENCIA_REPETIR,
+    SENTENCIA_FACIL_REPETIR,SENTENCIA_MIENTRAS,SENTENCIA_PARA,
+    SENTENCIA_SELECTOR,SENTENCIA_FACIL_SELECTOR,
+    SENTENCIA_SI,SENTENCIA_FACIL_SI,
+    BLOQUE_SELECTOR,CABEZA,
+    MANIPULAR_COMPONENTE,TIPO_DATO,TIPO_VALOR;
 //Precedencia de operadores
-precedence left o;
+precedence left o,fin_programa;
 precedence left y;
 precedence right no;
 precedence left Igual,Menor,Mayor,Menor_i,Mayor_i,Diferente;
 precedence left Suma, Resta;
-precedence left Mul, Div; 
+precedence left Mul, Div,inicio_programa,Identificador; 
 //Producción con la que iniciar
 start with INICIO;
 
-INICIO ::= inicio_programa Identificador BLOQUE_DECLARACION BLOQUE_CODIGO fin_programa {:System.out.println("Inicio de programa");:}
+INICIO ::=
+     CABEZA BLOQUE_DECLARACION BLOQUE_CODIGO fin_programa
 ;
-BLOQUE_DECLARACION ::=  inicio_var DECLARACIONES fin_var
+CABEZA ::= 
+    Identificador:s {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al escribir inicio_programa. Tienes " + s);:} Identificador |
+    inicio_programa Identificador |
+    inicio_programa error:s {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Te falta añadirle un nombre al programa");:} |
+    ;
+BLOQUE_DECLARACION ::=  inicio_var DECLARACIONES fin_var  |
+    Identificador:s
+        {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al iniciar el bloque de las variables. Esta mal escrito inicio_var");:}
+    DECLARACIONES fin_var |
+    inicio_var DECLARACIONES Identificador:s {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> El bloque de variables debe termina con fin_var.");:}
 ;
-BLOQUE_CODIGO ::= bloque CODIGO fin_bloque
+BLOQUE_CODIGO ::= inicio_bloque SENTENCIA fin_bloque |
+    Identificador:s 
+        {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al iniciar el bloque de código. Debe iniciar con la palabra inicio_bloque, revisa si esta bien escrito.");:}
+    SENTENCIA fin_bloque |
+    inicio_bloque SENTENCIA Identificador:s
+         {:editor.ERRORES.add("Error de sintáxis. Línea " + (sright + 1)+ " --> Error al terminar el bloque de código. Debe finalizar con la palabra fin_bloque, revisa si esta bien escrito.");:} |    
 ;
 DECLARACIONES ::= DECLARACIONES DECLARACION | 
-                        DECLARACION
+                        DECLARACION |
                         DECLARACIONES DECLARACION_A |
-                        DECLARACION_A
+                        DECLARACION_A 
 ;
-DECLARACION ::= definir Identificador como decimal PUNTO_COMA |
-    definir Identificador como Decimal PUNTO_COMA |
-    definir Identificador como logico PUNTO_COMA |
-    definir Identificador como Texto PUNTO_COMA |
-    definir Identificador como display PUNTO_COMA |
-    definir Identificador como motor PUNTO_COMA |
-    definir Identificador como led PUNTO_COMA |
-    definir Identificador como Tiempo PUNTO_COMA
+TIPO_DATO ::= entero | decimal | logico | texto | display | motor | led | tiempo
 ;
-DECLARACION_A ::= definir Identificador como entero Asignacion_s Numero PUNTO_COMA |
-    definir Identificador como decimal Asignacion_s Decimal PUNTO_COMA |
-    definir Identificador como logico Asignacion_s VALOR_LOGICO PUNTO_COMA |
-    definir Identificador como texto Asignacion_s Texto PUNTO_COMA |
-    definir Identificador como display Asignacion_s PUNTO_COMA |
-    definir Identificador como motor Asignacion_s PUNTO_COMA |
-    definir Identificador como led Asignacion_s PUNTO_COMA |
-    definir Identificador como tiempo Asignacion_s Tiempo PUNTO_COMA
+TIPO_VALOR ::= Numero | Decimal | VALOR_LOGICO | Texto | Tiempo
+;
+DECLARACION ::= definir Identificador como TIPO_DATO PUNTO_COMA |
+    definir Identificador como arreglo Cor_a Numero Cor_c PUNTO_COMA |
+    definir Identificador como arregloBi Cor_a Numero Cor_c Cor_a Numero Cor_c PUNTO_COMA
+;
+DECLARACION_A ::= definir Identificador como TIPO_DATO Asignacion_s TIPO_VALOR PUNTO_COMA |
+    definir Identificador como TIPO_DATO Asignacion_s TIPO_VALOR error:s {:editor.ERRORES.add("Falta un punto y coma " + sright);:}
 ;
 VALOR_LOGICO ::= verdadero | falso
 ;
-CODIGO ::= CODIGO ASIGNACION | ASIGNACION
-;
-ASIGNACION ::= Identificador Asignacion_s EXPRESION
+ASIGNACION ::= Identificador Asignacion_s EXPRESION PUNTO_COMA
 ;
 EXPRESION ::= EXPRESION Suma TERMINO |
     EXPRESION Resta TERMINO |
@@ -82,10 +99,8 @@ TERMINO ::= TERMINO Mul FACTOR |
     FACTOR
 ;
 FACTOR ::= Par_a EXPRESION Par_c |
-    Numero | Decimal | Identificador
+    Numero | Decimal | Identificador | Texto
 ;
-
-
 CONDICION ::= Identificador Igual falso |
     Identificador Igual verdadero |
     verdadero Igual Identificador |
@@ -97,4 +112,68 @@ CONDICION ::= Identificador Igual falso |
     verdadero |
     falso |
     Identificador
+;
+OP_REL ::= Mayor_i | Menor_i | Diferente | Mayor | Menor;
+DIRECCION ::= izquierda | derecha
+;
+FACIL_SENTENCIA ::= ASIGNACION PUNTO_COMA | METODO PUNTO_COMA
+;
+METODO ::= incrementar Identificador |
+    decrementar Identificador |
+    MOSTRAR_TEXTO |
+    MANIPULAR_COMPONENTE
+;
+MOSTRAR_TEXTO ::= mostrar Texto
+;
+MANIPULAR_COMPONENTE ::= Identificador PUNTO encender |
+    Identificador PUNTO apagar |
+    Identificador PUNTO encender PUNTO COLOR |
+    Identificador PUNTO girar PUNTO DIRECCION |
+    Identificador PUNTO girar PUNTO DIRECCION Par_a TIEMPO Par_c |
+    Identificador PUNTO visualizar Par_a TEXTO Par_c
+;
+
+COLOR ::= rojo | verde | azul;
+TIEMPO ::= Tiempo | Identificador;
+TEXTO ::= Texto | Identificador;
+
+SENTENCIA ::= SENTENCIA FACIL_SENTENCIA |
+    FACIL_SENTENCIA |
+    SENTENCIA DECISION |
+    DECISION |
+    SENTENCIA ASIGNACION |
+    ASIGNACION |
+    SENTENCIA SENTENCIA_REPETIR |
+    SENTENCIA_REPETIR |
+    SENTENCIA SENTENCIA_FACIL_REPETIR |
+    SENTENCIA_FACIL_REPETIR |
+    SENTENCIA SENTENCIA_MIENTRAS |
+    SENTENCIA_MIENTRAS |
+    SENTENCIA SENTENCIA_PARA|
+    SENTENCIA_PARA |
+    SENTENCIA SENTENCIA_SELECTOR |
+    SENTENCIA_SELECTOR
+;
+DECISION ::= SENTENCIA_SI | SENTENCIA_FACIL_SI
+;
+SENTENCIA_SI ::= si Par_a CONDICION Par_c Lla_a SENTENCIA Lla_c |
+    si Par_a CONDICION Par_c Lla_a SENTENCIA Lla_c sino Lla_a SENTENCIA Lla_c
+;
+SENTENCIA_FACIL_SI ::= facil_si Par_a CONDICION Par_c FACIL_SENTENCIA |
+        facil_si Par_a CONDICION COMA FACIL_SENTENCIA Par_c Lla_a facil_sino Par_a FACIL_SENTENCIA Par_c Lla_c
+;
+SENTENCIA_REPETIR ::= repetir Numero veces Lla_a SENTENCIA Lla_c
+; 
+SENTENCIA_FACIL_REPETIR ::= facil_repetir Par_a Numero COMA FACIL_SENTENCIA Par_c
+;
+SENTENCIA_MIENTRAS ::= mientras Par_a CONDICION Par_c Lla_a SENTENCIA Lla_c 
+;
+SENTENCIA_PARA ::= para Par_a Identificador Asignacion_s Numero COMA incrementar Identificador COMA CONDICION Par_c Lla_a SENTENCIA Lla_c
+;
+SENTENCIA_SELECTOR ::= selector Par_a Identificador Par_c Lla_a BLOQUE_SELECTOR Lla_c
+;
+BLOQUE_SELECTOR ::= BLOQUE_SELECTOR Numero DosPuntos SENTENCIA salir PUNTO_COMA |
+    Numero DosPuntos SENTENCIA salir PUNTO_COMA |
+    BLOQUE_SELECTOR Texto DosPuntos SENTENCIA salir PUNTO_COMA |
+    Texto DosPuntos SENTENCIA salir PUNTO_COMA
 ;

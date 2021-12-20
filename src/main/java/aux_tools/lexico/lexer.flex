@@ -41,6 +41,8 @@ StringCharacter = [^\r\n\"\\]
     fin_var |
     fin_bloque |
     definir |
+    arreglo |
+    arregloBi |
     como |
     si |
     verdadero |
@@ -51,8 +53,10 @@ StringCharacter = [^\r\n\"\\]
     veces |
     selector |
     caso |
-    bloque |
+    inicio_bloque |
     motor |
+    motor_electrico |
+    motor_paso |
     display |
     led |
     entero |
@@ -76,14 +80,20 @@ StringCharacter = [^\r\n\"\\]
     incluir |
     selector |
     salir |
+    para |
     tiempo |
     led_semaforo |
     led_panel |
     led_rgb |
     intensidad |
+    rojo |
+    verde |
+    azul |
     o |
     y |
     no |
+    incrementar |
+    decrementar |
     girar |
     logico |
     derecha |
@@ -153,10 +163,10 @@ StringCharacter = [^\r\n\"\\]
     "["|"]" {
         lexeme=yytext();linea = this.yyline+1; return SA_Corchetes;
     }
-    ";"|">"|"<"|"#"|"$"|":" {
+    ";"|">"|"<"|"#"|"$"|":"|","|"." {
         lexeme=yytext();linea = this.yyline+1; return Simbolo_Especial;
     }
-    "." (prender|girar|apagar|estado) {lexeme=yytext();linea = this.yyline+1; return Propiedad;}
+    "." (prender|girar|apagar|estado|encendido|apagado|rojo|verde|azul) {lexeme=yytext();linea = this.yyline+1; return Propiedad;}
      . {this.msg = "Código de error 1: Símbolo no reconocido ";lexeme=yytext();linea=this.yyline+1;return ERROR;}
 }
 <COMMENT> {

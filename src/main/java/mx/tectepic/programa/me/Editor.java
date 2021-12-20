@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package mx.tectepic.programa.me;
+
 import java_cup.runtime.Symbol;
 import aux_tools.EstiloDialog;
 import aux_tools.FontSelector;
@@ -14,6 +15,7 @@ import java.io.File;
 import javax.swing.JTextArea;
 import aux_tools.lexico.Lexer;
 import aux_tools.lexico.Tokens;
+import aux_tools.sintactico.Lexer_S;
 import aux_tools.sintactico.Syntax;
 import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
@@ -24,6 +26,7 @@ import java.io.FileReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java_cup.runtime.Symbol;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
@@ -379,7 +382,7 @@ public class Editor extends javax.swing.JFrame {
         listaTokens.setLayout(listaTokensLayout);
         listaTokensLayout.setHorizontalGroup(
             listaTokensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 225, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 282, Short.MAX_VALUE)
         );
         listaTokensLayout.setVerticalGroup(
             listaTokensLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -404,7 +407,7 @@ public class Editor extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 15, Short.MAX_VALUE)
+            .addGap(0, 9, Short.MAX_VALUE)
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -430,7 +433,7 @@ public class Editor extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(tpTablas, javax.swing.GroupLayout.PREFERRED_SIZE, 231, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(tpTablas, javax.swing.GroupLayout.PREFERRED_SIZE, 293, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -487,111 +490,202 @@ public class Editor extends javax.swing.JFrame {
             estaGuardado = true;
         }
     }
+
+    private void AnalisisLexico() {
+        txtMensajes.setText("");
+        tablaSimbolos_id = new TablaSimbolos();
+        File archivo = new File("archivo.txt");
+        PrintWriter escribir;
+        try
+        {
+            escribir = new PrintWriter(archivo);
+            escribir.print(texto.getText());
+            escribir.close();
+        } catch (FileNotFoundException ex)
+        {
+        }
+        try
+        {
+            modelo.setRowCount(0);
+            String errores = "";
+            boolean erro = false;
+            Reader lector = new BufferedReader(new FileReader("archivo.txt"));
+            Lexer lexer = new Lexer(lector);
+            while (true)
+            {
+                Tokens tokens = lexer.yylex();
+                if (tokens == null)
+                {
+                    txtMensajes.setText("Terminado analisis lexico\n");
+                    if (!erro)
+                    {
+                        if (cont_par_a > cont_par_c || cont_lla_a > cont_lla_c || cont_cor_a > cont_cor_c)
+                        {
+                            if (cont_par_a > cont_par_c)
+                            {
+                                int cant1 = cont_par_a - cont_par_c;
+                                for (int i = 0; i < cant1; i++)
+                                {
+                                    errores = errores + "Un paréntesis de apertura \"(\" esta sin cerrar";
+                                }
+                            }
+                            if (cont_cor_a > cont_cor_c)
+                            {
+                                int cant2 = cont_cor_a - cont_cor_c;
+                                for (int i = 0; i < cant2; i++)
+                                {
+                                    errores = errores + "Un corchete de apertura \"[\" esta sin cerrar";
+                                }
+                            }
+                            if (cont_lla_a > cont_lla_c)
+                            {
+                                int cant3 = cont_lla_a - cont_lla_c;
+                                for (int i = 0; i < cant3; i++)
+                                {
+                                    errores = errores + "Una llave de apertura \"{\" esta sin cerrar";
+                                }
+                            }
+                          //  txtMensajes.setText(errores);
+                        }
+                    } else
+                    {
+                        if (cont_par_a > cont_par_c)
+                        {
+                            int cant1 = cont_par_a - cont_par_c;
+                            for (int i = 0; i < cant1; i++)
+                            {
+                                errores = errores + "Un paréntesis de apertura \"(\" esta sin cerrar";
+                            }
+                            if (cont_cor_a > cont_cor_c)
+                            {
+                                int cant2 = cont_cor_a - cont_cor_c;
+                                for (int i = 0; i < cant2; i++)
+                                {
+                                    errores = errores + "Un corchete de apertura \"[\" esta sin cerrar";
+                                }
+                            }
+                        }
+                        if (cont_lla_a > cont_lla_c)
+                        {
+                            int cant3 = cont_lla_a - cont_lla_c;
+                            for (int i = 0; i < cant3; i++)
+                            {
+                                errores = errores + "Una llave de apertura \"{\" esta sin cerrar";
+                            }
+                        }
+                        //txtMensajes.setText(errores);
+                    }
+                    break;
+                }
+                switch (tokens)
+                {
+                    case ERROR:
+                        erro = true;
+                        errores = errores + lexer.msg + "[" + lexer.lexeme + "]" + " ------ en la línea " + lexer.linea + "\n";
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case P_Reservada:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Asignacion:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Suma:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Resta:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Multiplicacion:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Division:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Identificador:
+                        tablaSimbolos_id.addToken(new Simbolo(lexer.lexeme, lexer.linea));
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Numero:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Decimal:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Tiempo:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Texto:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case SA_Parentesis:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case SA_Llaves:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case SA_Corchetes:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Simbolo_Especial:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                    case Propiedad:
+                        insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
+                        break;
+                }
+            }
+            if (erro)
+            {
+                txtMensajes.setText(errores);
+            }
+        } catch (Exception ex)
+        {
+            System.out.println(ex);
+        }
+            }
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
         if (cmbTipo.getSelectedIndex() == 0)
         {
-            txtMensajes.setText("");
-            tablaSimbolos_id = new TablaSimbolos();
-            File archivo = new File("archivo.txt");
-            PrintWriter escribir;
-            try
+            if (texto.getText().trim().isEmpty())
             {
-                escribir = new PrintWriter(archivo);
-                escribir.print(texto.getText());
-                escribir.close();
-            } catch (FileNotFoundException ex)
-            {
+                txtMensajes.setText("No hay texto para analizar");
+                return;
             }
+            AnalisisLexico();
+        } else if (cmbTipo.getSelectedIndex() == 1)
+        {
+            if (texto.getText().trim().isEmpty())
+            {
+                txtMensajes.setText("No hay texto para analizar");
+                return;
+            }
+            ERRORES.clear();
+            AnalisisLexico();
+            String ST = texto.getText();
+            Syntax s = new Syntax(new Lexer_S(new StringReader(ST)));
+            s.setEditor(this);
             try
             {
-                modelo.setRowCount(0);
-                String errores = "";
-                boolean erro = false;
-                Reader lector = new BufferedReader(new FileReader("archivo.txt"));
-                Lexer lexer = new Lexer(lector);
-                while (true)
-                {
-                    Tokens tokens = lexer.yylex();
-                    if (tokens == null)
-                    {
-                        txtMensajes.setText("Terminado analisis lexico\n");
-                        break;
-                    }
-                    switch (tokens)
-                    {
-                        case ERROR:
-                            erro = true;
-                            errores = errores + lexer.msg + "[" + lexer.lexeme + "]" + " ------ en la línea " + lexer.linea + "\n";
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case P_Reservada:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Asignacion:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Suma:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Resta:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Multiplicacion:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Division:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Identificador:
-                            tablaSimbolos_id.addToken(new Simbolo(lexer.lexeme, lexer.linea));
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Numero:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Decimal:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Tiempo:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Texto:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case SA_Parentesis:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case SA_Llaves:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case SA_Corchetes:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Simbolo_Especial:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                        case Propiedad:
-                            insertarSimboloLexico(lexer.lexeme, tokens.name(), lexer.linea);
-                            break;
-                    }
-                }
-                if (erro)
-                {
-                    txtMensajes.setText(errores);
-                }
+                s.parse();
             } catch (Exception ex)
             {
-                System.out.println(ex);
+                ERRORES.add(
+                        "Error de sintaxis detectados, porfavor revise las sentencias"
+                );
+                System.out.println(ex.getMessage());
             }
-        } else if(cmbTipo.getSelectedIndex() == 1){
-            String ST = texto.getText();
-            Syntax s = new Syntax(new aux_tools.sintactico.Lexer_S(new StringReader(ST)));
-            try{
-                s.parse();
-            } catch(Exception ex){
-                System.out.println("-----------------------------------------------------------\n" + (ex.getMessage()));
-                Symbol sym = s.getS();
-                txtMensajes.setText("Error de sintaxis. Linea: " + (sym.right + 1) + " Columna: " + (sym.left + 1) + ", Texto: \"" + sym.value + "\"");
+            if (!this.ERRORES.isEmpty())
+            {
+                String cad = "\nErrores encontrados durante el análisis sintáctico: " + (ERRORES.size()) + " error(es)\n";
+                for (int i = 0; i < ERRORES.size(); i++)
+                {
+                    cad += "ERROR " + (i + 1) + ": " + ERRORES.get(i) + "\n";
+                }
+                txtMensajes.append(cad);
+            } else
+            {
+                txtMensajes.append("Análisis sintáctico finalizado correctamente");
             }
         }
     }//GEN-LAST:event_btnAnalizarActionPerformed
@@ -640,7 +734,6 @@ public class Editor extends javax.swing.JFrame {
     private void vtnTextoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_vtnTextoKeyReleased
         // TODO add your handling code here:
     }//GEN-LAST:event_vtnTextoKeyReleased
-
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
         if (esNuevo)
         {
@@ -673,7 +766,6 @@ public class Editor extends javax.swing.JFrame {
         }
         //this.tblLexico
     }//GEN-LAST:event_btnNuevoActionPerformed
-
     private void btnAbrirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbrirActionPerformed
         abrir();
     }//GEN-LAST:event_btnAbrirActionPerformed
@@ -722,15 +814,26 @@ public class Editor extends javax.swing.JFrame {
     }
     private JTextArea texto;
     private TextLineNumber tln;
-    public Font actualFont = new Font("Consolas", 0, 12);
+    public Font actualFont = new Font("Consolas", 0, 16);
     private boolean esNuevo = true;
     private boolean estaGuardado = true;
     private DefaultTableModel modelo;
-    TablaSimbolos tablaSimbolos_id;
+    public TablaSimbolos tablaSimbolos_id;
     private JFileChooser seleccion;
     File archivo;
     FileInputStream entrada;
     FileOutputStream salida;
+    ////////////////////////////////////////////
+    private static ArrayList<Simbolo> tok = new ArrayList<Simbolo>();
+    private static ArrayList<Simbolo> tok_2 = new ArrayList<Simbolo>();
+    public static ArrayList<String> ERRORES = new ArrayList<String>();
+    int cont_par_a = 0;
+    int cont_cor_a = 0;
+    int cont_lla_a = 0;
+    int cont_par_c = 0;
+    int cont_cor_c = 0;
+    int cont_lla_c = 0;
+    ////////////////////////////////////////////
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrir;
     private javax.swing.JButton btnAnalizar;

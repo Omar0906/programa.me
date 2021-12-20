@@ -4,7 +4,7 @@ inicio_programa [nombre del programa]
 
 	fin_var
 	
-	bloque
+	inicio_bloque
 		//Bloque de codigo
 
 	fin_bloque

@@ -1,4 +1,4 @@
-
+package External;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -12,8 +12,11 @@ public class Analizadorlexico {
     private static final String ruta = System.getProperty("user.dir");
     private static final String directoriolexico = "/src/main/java/aux_tools/lexico/";
     private static final String directoriosintactico = "/src/main/java/aux_tools/sintactico/";
-
-    public static void main(String[] args) throws Exception {
+    public Analizadorlexico(){}
+    public static void main(String[] args) throws Exception{
+        Generar();
+    }
+    public static void Generar() throws Exception {
         System.out.println("Creando Analizador Léxico");
         generarLexico(ruta.replace("\\", "/") + directoriolexico + "lexer.flex");
         System.out.println("Terminado Analizador Léxico");
@@ -22,7 +25,13 @@ public class Analizadorlexico {
             "-parser", "Syntax", ruta.replace("\\", "/") + directoriosintactico + "Syntax.cup"
         };
         System.out.println("Creando Analizador Sintáctico");
-        generarSintactico(rutas, ruta.replace("\\", "/") + directoriosintactico + "Lexer_S.flex");
+        try
+        {
+            generarSintactico(rutas, ruta.replace("\\", "/") + directoriosintactico + "Lexer_S.flex");
+        } catch (Exception ex)
+        {
+            Logger.getLogger(Analizadorlexico.class.getName()).log(Level.SEVERE, null, ex);
+        }
         System.out.println("Terminado Analizador Sintáctico");
     }
 

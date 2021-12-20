@@ -1,0 +1,20 @@
+inicio_programa nom
+	inicio_var
+		definir 9x como entero = 87;
+		definir y como decimal = 32.2;
+		definir ban como logico = verdadero;
+		definir mensaje como texto;
+	fin_va
+		inicio_bloque
+			mensaje = "hola!";
+			si(led1.estado){
+				mostrar "El led está prendido";
+			} sino{
+				led1.prender; 
+      }
+			selector(ban){
+				caso verdadero:
+					x = x+y;
+			}
+		fin_bloque
+fin_programa
