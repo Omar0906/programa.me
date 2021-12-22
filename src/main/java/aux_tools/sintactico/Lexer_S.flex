@@ -136,7 +136,9 @@ StringCharacter = [^\r\n\"\\]
     "!=" {return new Symbol(sym.Diferente,(int) yychar,yyline,yytext());}
     ">=" {return new Symbol(sym.Mayor_i,(int) yychar,yyline,yytext());}
     "<=" {return new Symbol(sym.Menor_i,(int) yychar,yyline,yytext());}
-
+    "/" {InputCharacter}* {LineTerminator}? {
+        this.msg = "Código de error 6: Cadena inválida ";return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
+    }
     {D}+ {
         return new Symbol(sym.Numero,(int) yychar,yyline,new Integer(yytext()));
     }

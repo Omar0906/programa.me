@@ -645,6 +645,11 @@ public class Editor extends javax.swing.JFrame {
         }
     }
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
+        if(esNuevo){
+            guardarComo();
+        }else{
+            guardar();
+        }
         if (cmbTipo.getSelectedIndex() == 0)
         {
             if (texto.getText().trim().isEmpty())
@@ -670,7 +675,7 @@ public class Editor extends javax.swing.JFrame {
                 s.parse();
             } catch (Exception ex)
             {
-                txtMensajes.append("Error de sintaxis detectados, porfavor revise las sentencias");
+                ERRORES.add(new ErroresSintacticos(0,"Error de sintaxis detectados, porfavor revise las sentencias"));
                 System.out.println(ex.getMessage());
             }
             if (!this.ERRORES.isEmpty())
@@ -745,7 +750,7 @@ public class Editor extends javax.swing.JFrame {
         if (reply == JOptionPane.YES_OPTION)
         {
 
-            String ruta = new File("src\\main\\java\\aux_tools\\Archivo Nuevo.pme").getAbsolutePath();
+            String ruta = new File("src\\main\\java\\aux_tools\\Nuevo programa.pme").getAbsolutePath();
             System.out.print(ruta);
             archivo = new File(ruta);
             if (archivo.canRead())
@@ -753,6 +758,7 @@ public class Editor extends javax.swing.JFrame {
                 if (archivo.getName().endsWith("pme"))
                 {
                     String documento = AbrirArchivo(archivo);
+                    this.setTitle(archivo.getName());
                     texto.setText(documento);
                 } else
                 {
@@ -910,7 +916,7 @@ public class Editor extends javax.swing.JFrame {
             String mensaje = guardararchivo(archivo, Documento);
             if (mensaje != null)
             {
-                JOptionPane.showMessageDialog(null, mensaje);
+                txtMensajes.setText(mensaje);
 
                 this.setTitle(archivo.getName());
             } else
@@ -967,6 +973,7 @@ public class Editor extends javax.swing.JFrame {
                     String documento = AbrirArchivo(archivo);
                     this.setTitle(archivo.getName());
                     texto.setText(documento);
+                    esNuevo=false;
                 } else
                 {
                     JOptionPane.showMessageDialog(null, "Archivo no es compatible");

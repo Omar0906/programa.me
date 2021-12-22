@@ -34,8 +34,8 @@ terminal apagar, inicio_bloque, caso, como, definir, derecha, display, facil_blo
     rojo,verde,azul,arreglo,arregloBi;
 //No terminales
 non terminal INICIO,BLOQUE_DECLARACION,BLOQUE_CODIGO, DECLARACIONES, CODIGO,
-    DECLARACION,DECLARACION_A,VALOR_LOGICO_DEC,ASIGNACION,EXPRESION,TERMINO,
-    FACTOR,CONDICION,CONDICION_2,CONDICION_3,CONDICION_4,OP_REL,COMPONENTE,DIRECCION,PARAMETRO_DECIMAL,PARAMETRO_ENTERO,
+    DECLARACION,DECLARACION_A,VALOR_LOGICO_DEC,ASIGNACION,EXPRESION,TERMINO,VALOR_BOOL,
+    FACTOR,CONDICION,OP_REL,COMPONENTE,DIRECCION,PARAMETRO_ENTERO,
     FACIL_SENTENCIA,METODO,MOSTRAR_TEXTO,COLOR,TIEMPO,TEXTO,
     SENTENCIA, DECISION,DECISION_FACIL,SENTENCIA_REPETIR,OP_LOGICO,
     SENTENCIA_FACIL_REPETIR,SENTENCIA_MIENTRAS,SENTENCIA_PARA,
@@ -115,10 +115,12 @@ DECLARACIONES ::=
     DECLARACION_A |
     DECLARACIONES DECLARACION_ARREGLO |
     DECLARACION_ARREGLO |
+
     /*DECLARACIONES ASIGNACION PUNTO_COMA:s{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Instrucción no válida dentro de las declaraciones."));:}|
     ASIGNACION PUNTO_COMA:s{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " -->Instrucción no válida dentro de las declaraciones."));:}|
     DECLARACIONES METODO PUNTO_COMA:s {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Instrucción no válida dentro de las declaraciones."));:}|
     METODO PUNTO_COMA:s{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Instrucción no válida dentro de las declaraciones."));:}|*/
+
     error:s fin_var 
         {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Declaración no válida."));:}|
     DECLARACIONES error:s PUNTO_COMA 
@@ -147,15 +149,30 @@ DECLARACION_ARREGLO ::=
             editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
         }
         System.out.println("Se encontro una declaracion de un arreglo");:}|
-    definir:s como arreglo Cor_a
+    definir Identificador como arreglo Cor_a Numero Cor_c:s {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Falta agregar el ;"));:}|
+    definir Identificador como arreglo:s Numero Cor_c PUNTO_COMA{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó abrir el corchete para el arreglo."));:}|
+    definir Identificador como arreglo Cor_a:s Cor_c PUNTO_COMA{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó agregar el tamaño  del arreglo."));:}|
+    definir Identificador como arreglo Cor_a Numero:s PUNTO_COMA{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó cerrar el corchete del arreglo."));:}|
     definir Identificador:id como arregloBi:td Cor_a Numero Cor_c  Cor_a Numero Cor_c PUNTO_COMA
         {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
             editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
         }
-        System.out.println("Se encontro una declaracion de un arregloBi");:}
+        System.out.println("Se encontro una declaracion de un arregloBi");:} |
+    definir Identificador como arregloBi Cor_a Numero Cor_c  Cor_a Numero Cor_c:s {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó el ;"));:}|
+    definir Identificador como arregloBi:s  Numero Cor_c  Cor_a Numero Cor_c PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó abrir el corchete del primer tamaño del arreglo"));:}|
+    definir Identificador como arregloBi Cor_a:s Cor_c  Cor_a Numero Cor_c PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó poner el primer tamaño del arreglo"));:}|
+    definir Identificador como arregloBi Cor_a Numero:s  Cor_a Numero Cor_c PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó cerrar el corchete del primer tamaño del arreglo"));:}|
+    definir Identificador como arregloBi Cor_a Numero Cor_c:s Numero Cor_c PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó abrir el corchete del segundo tamaño del arreglo"));:}|
+    definir Identificador como arregloBi Cor_a Numero Cor_c Cor_a:s Cor_c PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó poner el segundo tamaño del arreglo"));:}|
+    definir Identificador como arregloBi Cor_a Numero Cor_c Cor_a Numero:s PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó cerrar el corchete segundo tamaño del arreglo"));:}
+    
 ;
 DECLARACION_A ::= 
     definir Identificador:id como TIPO_DATO_DEC:td Asignacion_s TIPO_VALOR_DEC:val PUNTO_COMA
+        {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),val);
+        }System.out.println("Se encontro una declaracion con asignacion de un " + td.toString());:} |
+    definir Identificador:id como TIPO_DATO_DEC:td Asignacion_s Identificador:val PUNTO_COMA
         {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
             editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),val);
         }System.out.println("Se encontro una declaracion con asignacion de un " + td.toString());:} |
@@ -198,42 +215,27 @@ TERMINO ::= TERMINO Mul FACTOR |
 FACTOR ::= Par_a EXPRESION Par_c |
     Numero | Decimal | Identificador
 ;
+VALOR_BOOL::= Identificador | verdadero | falso|Identificador PUNTO estado;
 
 CONDICION ::=
-    CONDICION o CONDICION_2 |
-    CONDICION_2
-;
-CONDICION_2 ::= 
-    CONDICION_2 y CONDICION_3|
-    CONDICION_3
-;
-CONDICION_3 ::=
-    CONDICION_3 OP_LOGICO CONDICION_4 | 
-    CONDICION_3 OP_REL CONDICION_4 |
-    Texto OP_REL CONDICION_3 |
-    Decimal OP_REL CONDICION_3 |
-    Numero OP_REL CONDICION_3 |
-    CONDICION_4
-;
-CONDICION_4 ::=
-    verdadero |
-    falso |
-    EXPRESION |
-    Identificador PUNTO estado |
-    Par_a CONDICION Par_c |
-    no Par_a CONDICION Par_c
+    Identificador OP_REL TIPO_VALOR_DEC|
+    TIPO_VALOR_DEC OP_REL Identificador|
+    TIPO_VALOR_DEC OP_REL TIPO_VALOR_DEC|
+    TIPO_VALOR_DEC:s TIPO_VALOR_DEC {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Se necesita un operador relacional."));:}|
+    Identificador:s TIPO_VALOR_DEC {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Se necesita un operador relacional."));:}|
+    VALOR_BOOL OP_LOGICO VALOR_BOOL |
+    VALOR_BOOL
 ;
 OP_REL ::= Mayor_i | Menor_i | Diferente | Mayor | Menor | Igual;
 DIRECCION ::= izquierda | derecha
 ;
-FACIL_SENTENCIA ::= METODO | ASIGNACION
-;
+FACIL_SENTENCIA ::= ASIGNACION | METODO  ;
 METODO ::=
     incrementar Identificador{:System.out.println("\nEncontrado un incremento de id");:} |
     decrementar Identificador{:System.out.println("\nEncontrado un decremento de id");:} |
     MOSTRAR_TEXTO |
     MANIPULAR_COMPONENTE
-   ;
+;
 //mostrar "cadena"
 MOSTRAR_TEXTO ::= 
     mostrar PARAMETRO_TEXTO {:System.out.println("\nEncontrado mostrar texto");:} |
@@ -255,7 +257,7 @@ MANIPULAR_COMPONENTE ::=
         {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Esta mal escrito el valor de tiempo. Recuerda que es un numero entero y ya sea seg, hr o min."));:}|
     Identificador PUNTO visualizar Par_a TEXTO Par_c{:System.out.println("\nEncontrado visualizar display");:} |
     Identificador PUNTO visualizar Par_a error:s Par_c{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> No se pudo identificar el texto a visualizar"));:} |
-    Identificador PUNTO error:s PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Esta mal escrita la función del componente."));:}
+    Identificador PUNTO error:s{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Esta mal escrita la función del componente."));:}
 ;
 
 COLOR ::= rojo | verde | azul;
@@ -283,14 +285,15 @@ SENTENCIA ::=
     SENTENCIA_PARA |
     SENTENCIA SENTENCIA_SELECTOR |
     SENTENCIA_SELECTOR |
-    error  PUNTO_COMA:s {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> La sentencia esta mal estructurada. Revisala."));:} |
-    error:s  fin_bloque {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> La sentencia esta mal estructurada. Revisala."));:} |
-    error:s  Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> La sentencia esta mal estructurada. Revisala."));:}
+    error  PUNTO_COMA:s {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> La sentencia esta mal estructurada. Revisala."));System.out.println("Error recuperado por ;");:} |
+    error:s  fin_bloque {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> La sentencia esta mal estructurada. Revisala."));System.out.println("Error recuperado por fin_bloque");:} |
+    error:s  Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> La sentencia esta mal estructurada. Revisala."));System.out.println("Error recuperado por }");:}
 ;
 DECISION ::= SENTENCIA_SI | SENTENCIA_FACIL_SI | SENTENCIA_FACIL_SINO
 ;
 SENTENCIA_SI ::= 
     si Par_a CONDICION Par_c Lla_a SENTENCIA Lla_c {:System.out.println("Se ha encontrado SENTENCIA SI");:} |
+    si Par_a CONDICION Par_c Lla_a Lla_c {:System.out.println("Se ha encontrado SENTENCIA SI");:} |
     si Par_a error:s Par_c Lla_a SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Hubo un error en la declaración de la condicion de la sentencia si."));:} |
     si:s CONDICION Par_c Lla_a SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta abrir el paréntesis de la condición"));:} |
     si Par_a:s Par_c Lla_a SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta poner la condición"));:} |
@@ -323,18 +326,18 @@ SENTENCIA_FACIL_SINO ::=
         facil_sino:s Par_a CONDICION COMA FACIL_SENTENCIA  FACIL_SENTENCIA Par_c PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta poner la coma que separa las instrucciones"));:}|
         facil_sino:s Par_a CONDICION COMA FACIL_SENTENCIA COMA  Par_c PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó poner la instrucción a realizar cuando sea falso"));:}|
         facil_sino:s Par_a CONDICION COMA FACIL_SENTENCIA COMA FACIL_SENTENCIA PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó cerrar el paréntesis"));:}|
-        facil_sino Par_a error:s COMA FACIL_SENTENCIA COMA FACIL_SENTENCIA PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Error al estructurar la condición"));:}|
+        facil_sino Par_a error:s Par_c PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Error al estructurar la condición"));:}|
         facil_sino Par_a CONDICION COMA error:s COMA FACIL_SENTENCIA PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Debe ser una sola sentencia"));:}|
         facil_sino Par_a CONDICION COMA FACIL_SENTENCIA COMA error:s PUNTO_COMA {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Debe ser una sola sentencia"));:}
 ;
 SENTENCIA_REPETIR ::= 
     repetir PARAMETRO_ENTERO veces Lla_a SENTENCIA Lla_c {:System.out.println("Se ha encontrado REPETIR");:} |
+    repetir PARAMETRO_ENTERO veces Lla_a Lla_c {:System.out.println("Se ha encontrado REPETIR");:} |
     Identificador:s PARAMETRO_ENTERO veces Lla_a SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Esta mal escrito \"repetir\". Tienes "+s.toString()));:} |
     repetir:s veces Lla_a SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta poner el número entero de repeticiones"));:} |
     repetir:s PARAMETRO_ENTERO  Lla_a SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta poner la palabra \"veces\""));:} |
     repetir PARAMETRO_ENTERO Identificador:s Lla_a SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Esta mal escrito \"veces\". Tienes: " +s.toString()));:} |
     repetir:s PARAMETRO_ENTERO veces  SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta abrir la llave del bloque repetir"));:} |
-    repetir PARAMETRO_ENTERO veces Lla_a:s  Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta poner las sentencias"));:} |
     repetir error:s Lla_a SENTENCIA Lla_c{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> La sentencia repetir esta incompleta"));:}
 ; 
 SENTENCIA_FACIL_REPETIR ::=
@@ -350,11 +353,11 @@ SENTENCIA_FACIL_REPETIR ::=
 ;
 SENTENCIA_MIENTRAS ::=
     mientras Par_a CONDICION Par_c Lla_a SENTENCIA Lla_c {:System.out.println("Se ha encontrado MIENTRAS");:}|
+    mientras Par_a CONDICION Par_c Lla_a Lla_c {:System.out.println("Se ha encontrado MIENTRAS");:}|
     mientras:s CONDICION Par_c Lla_a SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta abrir el paréntesis"));:} |
     mientras Par_a:s Par_c Lla_a SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta poner la condicion"));:} |
     mientras Par_a:s CONDICION  Lla_a SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta cerrar el paréntesis"));:} |
     mientras Par_a CONDICION Par_c:s  SENTENCIA Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta abrir la llave del bloque mientras"));:} |
-    mientras Par_a CONDICION Par_c Lla_a:s  Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falta poner sentencias dentro del bloque"));:} |
     mientras error:s Lla_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Error en la sintaxis del ciclo mientras, por favor revisalo"));:}
 ;
 SENTENCIA_PARA ::= 
@@ -399,7 +402,6 @@ BLOQUE_SELECTOR ::= BLOQUE_SELECTOR caso Numero DosPuntos SENTENCIA salir PUNTO_
     error:s Lla_c:u {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Error en la sintáxis de los casos del selector."));
         System.out.println("Error en casos del selector, ir a llave en la línea " + uright);:}
 ;
-PARAMETRO_DECIMAL ::=   Identificador | Decimal  ;
 PARAMETRO_ENTERO::= Identificador | Numero ;
 PARAMETRO_TEXTO::= Identificador | Texto ;
 INC_DEC ::= incrementar | decrementar;

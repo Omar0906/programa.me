@@ -100,7 +100,7 @@ StringCharacter = [^\r\n\"\\]
     {Comment} {/*Ignore*/}
     
     "\"" { yybegin(STRING); string.setLength(0); string.append("\""); }
-
+    
     "=" {lexeme=yytext();linea = this.yyline+1; return Asignacion;}
     "+" {lexeme=yytext();linea = this.yyline+1; return Suma;}
     "-" {lexeme=yytext();linea = this.yyline+1; return Resta;}
@@ -131,6 +131,9 @@ StringCharacter = [^\r\n\"\\]
     {D} ({L}|".")+ ("."+ [0-9]+) {
         this.msg = "Código de error 6: Cadena inválida "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
     }
+    "/" {InputCharacter}* {LineTerminator}? {
+        this.msg = "Código de error 6: Cadena inválida "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
+    }
     {D}+ "." {
         this.msg = "Código de error 2: Formato de número decimal incorrecto "; lexeme=yytext(); linea = this.yyline+1; return ERROR;
     }
@@ -158,7 +161,7 @@ StringCharacter = [^\r\n\"\\]
     "["|"]" {
         lexeme=yytext();linea = this.yyline+1; return SA_Corchetes;
     }
-    ";"|">"|"<"|"#"|"$"|":"|","|"." {
+    ";"|">"|"<"|"#"|"$"|":"|","|"."|"!"|"," {
         lexeme=yytext();linea = this.yyline+1; return Simbolo_Especial;
     }
     "." (prender|girar|apagar|estado|encendido|apagado|rojo|verde|azul) {lexeme=yytext();linea = this.yyline+1; return Propiedad;}

@@ -1,24 +1,29 @@
-inicio_programa fe43
-	usar "PIC16";
-	inicio_var
-		definir motor2 como motor;
-	fin_var
-	inicio_bloque
-			decrementar x
-			incrementar r;
-			x = 23;
-			mostrr "cadena";
-			repetir 3 vecs{
-				mostrar "hola";
+inicio_programa nombre_del_programa
+    usar "PICXX";
+    inicio_var
+			definir var1 como entero;
+			definir ban como logico = erdadero;
+			definir var2 como entero = 32;
+			definir dec2 como decimal = 32.4;
+			definir mot1 como motor;
+			definir mot2 como motor;
+			definir l como led;
+    fin_var
+    inicio_bloque
+			mot1.asignar(1);
+			mot2.asignar(2);	
+		si(ban){
+				mot1.girar.derecha;
+				mot2.girar.izquierda;
 			}
-			si(x<=32){
-				x = 34;
-			}
-			
-			facil_repetir(wsd,x=x+2);
-			facil_si(vdadero,mostrar "hola");
-			mientras (2<id2){
-				x = s + l *wd;
-			}
-	fin_bloque
+		mientras(var2!=0){
+			decrementar var2;
+		}
+		facil_sino(ban != verdadero,incrementar x,mostrar "hola");
+		mot1.detener;
+		mot2.detener;
+		si(l.estado){
+			l.apagar;
+		}
+    fin_bloque
 fin_programa
