@@ -1,13 +1,14 @@
 inicio_programa fe43
+	usar "PIC16";
 	inicio_var
-		definir x como entero = 23;
+		definir motor2 como motor;
 	fin_var
-	inicio_bloqu
-			decrementar x;
+	inicio_bloque
+			decrementar x
 			incrementar r;
 			x = 23;
-			mostrar "cadena";
-			repetir 3 veces{
+			mostrr "cadena";
+			repetir 3 vecs{
 				mostrar "hola";
 			}
 			si(x<=32){

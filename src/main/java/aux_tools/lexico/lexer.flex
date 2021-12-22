@@ -55,8 +55,6 @@ StringCharacter = [^\r\n\"\\]
     caso |
     inicio_bloque |
     motor |
-    motor_electrico |
-    motor_paso |
     display |
     led |
     entero |
@@ -71,11 +69,7 @@ StringCharacter = [^\r\n\"\\]
     girar |
     facil_si |
     facil_sino |
-    facil_hacer_mientras |
-    facil_mientras |
     facil_repetir |
-    facil_selector |
-    facil_bloque |
     mostrar |
     incluir |
     selector |
@@ -89,6 +83,7 @@ StringCharacter = [^\r\n\"\\]
     verde |
     azul |
     o |
+    usar|
     y |
     no |
     incrementar |
@@ -97,6 +92,7 @@ StringCharacter = [^\r\n\"\\]
     logico |
     derecha |
     izquierda |
+    asignar|
     estado |
     grados |
     falso {lexeme=yytext();linea = this.yyline+1; return P_Reservada;}

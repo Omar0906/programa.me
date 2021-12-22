@@ -49,6 +49,7 @@ StringCharacter = [^\r\n\"\\]
     "entero" {return new Symbol(sym.entero,(int) yychar,yyline,yytext());} 
     "texto" {return new Symbol(sym.texto,(int) yychar,yyline,yytext());} 
     "logico" {return new Symbol(sym.logico,(int) yychar,yyline,yytext());}    
+    "usar" {return new Symbol(sym.usar,(int) yychar,yyline,yytext());}    
     
 
     "tiempo" {return new Symbol(sym.tiempo,(int) yychar,yyline,yytext());} 
@@ -60,6 +61,7 @@ StringCharacter = [^\r\n\"\\]
     "visualizar" {return new Symbol(sym.visualizar,(int) yychar,yyline,yytext());} 
     
     
+    "asignar" {return new Symbol(sym.asignar,(int) yychar,yyline,yytext());} 
     "detener" {return new Symbol(sym.detener,(int) yychar,yyline,yytext());} 
     "arreglo" {return new Symbol(sym.arreglo,(int) yychar,yyline,yytext());} 
     "arregloBi" {return new Symbol(sym.arregloBi,(int) yychar,yyline,yytext());} 
@@ -70,11 +72,8 @@ StringCharacter = [^\r\n\"\\]
     "definir" {return new Symbol(sym.definir,(int) yychar,yyline,yytext());}  
     "derecha" {return new Symbol(sym.derecha,(int) yychar,yyline,yytext());}  
     "display" {return new Symbol(sym.display,(int) yychar,yyline,yytext());}   
-    "fin_bloque" {return new Symbol(sym.fin_bloque,(int) yychar,yyline,yytext());}  
-    "facil_hacer_mientras" {return new Symbol(sym.facil_hacer_mientras,(int) yychar,yyline,yytext());}  
-    "facil_mientras" {return new Symbol(sym.facil_mientras,(int) yychar,yyline,yytext());}  
-    "facil_repetir" {return new Symbol(sym.facil_repetir,(int) yychar,yyline,yytext());}  
-    "facil_selector" {return new Symbol(sym.facil_selector,(int) yychar,yyline,yytext());}  
+    "fin_bloque" {return new Symbol(sym.fin_bloque,(int) yychar,yyline,yytext());}
+    "facil_repetir" {return new Symbol(sym.facil_repetir,(int) yychar,yyline,yytext());}
     "facil_si" {return new Symbol(sym.facil_si,(int) yychar,yyline,yytext());}  
     "facil_sino" {return new Symbol(sym.facil_sino,(int) yychar,yyline,yytext());}  
     "falso" {return new Symbol(sym.falso,(int) yychar,yyline,yytext());}  
@@ -96,9 +95,7 @@ StringCharacter = [^\r\n\"\\]
     "mientras" {return new Symbol(sym.mientras,(int) yychar,yyline,yytext());}  
     "min" {return new Symbol(sym.min,(int) yychar,yyline,yytext());}  
     "mostrar" {return new Symbol(sym.mostrar,(int) yychar,yyline,yytext());} 
-    "motor" {return new Symbol(sym.motor,(int) yychar,yyline,yytext());}  
-    "motor_electrico" {return new Symbol(sym.motor_electrico,(int) yychar,yyline,yytext());}  
-    "motor_paso" {return new Symbol(sym.motor_paso,(int) yychar,yyline,yytext());}  
+    "motor" {return new Symbol(sym.motor,(int) yychar,yyline,yytext());}
     "para" {return new Symbol(sym.para,(int) yychar,yyline,yytext());}  
     "prender" {return new Symbol(sym.prender,(int) yychar,yyline,yytext());}  
     "repetir" {return new Symbol(sym.repetir,(int) yychar,yyline,yytext());}  

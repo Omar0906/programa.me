@@ -14,6 +14,7 @@ import java.io.File;
 import javax.swing.JTextArea;
 import aux_tools.lexico.Lexer;
 import aux_tools.lexico.Tokens;
+import aux_tools.sintactico.ErroresSintacticos;
 import aux_tools.sintactico.Lexer_S;
 import aux_tools.sintactico.Syntax;
 import java.awt.event.ActionEvent;
@@ -26,6 +27,7 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -668,17 +670,16 @@ public class Editor extends javax.swing.JFrame {
                 s.parse();
             } catch (Exception ex)
             {
-                ERRORES.add(
-                        "Error de sintaxis detectados, porfavor revise las sentencias"
-                );
+                txtMensajes.append("Error de sintaxis detectados, porfavor revise las sentencias");
                 System.out.println(ex.getMessage());
             }
             if (!this.ERRORES.isEmpty())
-            {
+            {   
+                Collections.sort(ERRORES);
                 String cad = "\nErrores encontrados durante el análisis sintáctico: " + (ERRORES.size()) + " error(es)\n";
                 for (int i = 0; i < ERRORES.size(); i++)
                 {
-                    cad += "ERROR " + (i + 1) + ": " + ERRORES.get(i) + "\n";
+                    cad += "ERROR " + (i + 1) + ": " + ERRORES.get(i).toString() + "\n";
                 }
                 txtMensajes.append(cad);
             } else
@@ -823,7 +824,7 @@ public class Editor extends javax.swing.JFrame {
     ////////////////////////////////////////////
     private static ArrayList<Simbolo> tok = new ArrayList<Simbolo>();
     private static ArrayList<Simbolo> tok_2 = new ArrayList<Simbolo>();
-    public static ArrayList<String> ERRORES = new ArrayList<String>();
+    public static ArrayList<ErroresSintacticos> ERRORES = new ArrayList<ErroresSintacticos>();
     int cont_par_a = 0;
     int cont_cor_a = 0;
     int cont_lla_a = 0;
