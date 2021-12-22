@@ -43,13 +43,13 @@ non terminal INICIO,BLOQUE_DECLARACION,BLOQUE_CODIGO, DECLARACIONES, CODIGO,
     BLOQUE_SELECTOR,CABEZA,SENTENCIA_FACIL_SINO,DECLARACION_ARREGLO,
     MANIPULAR_COMPONENTE,TIPO_DATO_DEC,TIPO_VALOR_DEC;
 //Precedencia de operadores
-precedence left o, PUNTO_COMA;
+precedence left o, PUNTO_COMA,Identificador,Par_c;
 precedence left COMA;
 precedence left y;
 precedence right no;
-precedence left Igual,Menor,Mayor,Menor_i,Mayor_i,Diferente,Identificador;
+precedence left Igual,Menor,Mayor,Menor_i,Mayor_i,Diferente;
 precedence left Suma, Resta;
-precedence left Mul, Div,Par_c;
+precedence left Mul, Div,inicio_programa;
 //Producción con la que iniciar
 start with INICIO;
 
@@ -59,9 +59,11 @@ INICIO ::=
      CABEZA BLOQUE_DECLARACION error:s BLOQUE_CODIGO fin_programa
         {:editor.ERRORES.add("Instrucciones fuera del área de código");:} |
      CABEZA BLOQUE_DECLARACION BLOQUE_CODIGO:s
-        {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> No encontrado el final del programa");:} |
-     error:s INICIO
-        {:editor.ERRORES.add("Contenido no esperado antes de iniciar el programa");:}
+        {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> No encontrado el final del programa");:} 
+|     error:s INICIO
+      {:editor.ERRORES.add("Contenido no esperado antes de iniciar el programa");:}
+|     error:s
+      {:editor.ERRORES.add("Programa no válido por errores de sintáxis.");:}
 ;
 CABEZA ::= 
     inicio_programa Identificador:id
@@ -69,14 +71,16 @@ CABEZA ::=
             editor.tablaSimbolos_id.ubicarToken(id.toString(),"Nombre del programa");
             System.out.println("Inicio y nombre correcto");
         }:} |
-    inicio_programa Identificador Identificador:s {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> El nombre del programa debe ser un solo identificador.");:} |
-    Identificador:s {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> Error al escribir inicio_programa. Tienes " + s);:} Identificador
+    error:s Identificador {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> Error al escribir inicio_programa.");:} |
+    inicio_programa error:s {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> Nombre del programa no válido, este no puede ser vacío ni iniciar con dígito.");:}
 ;
 BLOQUE_DECLARACION ::=  
     inicio_var fin_var 
         {:System.out.println("Bloque declaracion correcto vacío");:} |
     inicio_var DECLARACIONES fin_var 
         {:System.out.println("Bloque declaracion correcto");:} |
+    inicio_var DECLARACIONES error:s fin_var 
+        {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> Error al especificar el bloque de declaraciones");:} |
     Identificador:s DECLARACIONES fin_var
         {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> Error al escribir inicio_var. Tienes " + s);:} |
     error:s
@@ -86,6 +90,7 @@ BLOQUE_DECLARACION ::=
 BLOQUE_CODIGO ::=   
          inicio_bloque fin_bloque {:System.out.println("Se encontro un BLOQUE_CODIGO vacío correcto");:}|
          inicio_bloque SENTENCIA fin_bloque {:System.out.println("Se encontro un BLOQUE_CODIGO correcto\n");:}|
+         Identificador SENTENCIA fin_bloque {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> Escribiste mal inicio_bloque. Tienes: " + s.toString());:}|
          error:s {:editor.ERRORES.add("Error al identificar el bloque de código " + sright);:}
 ;
 DECLARACIONES ::=
@@ -149,8 +154,8 @@ DECLARACION_A ::=
         {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> Faltó agregar el tipo de dato.");:} |
     definir Identificador como TIPO_DATO_DEC:s TIPO_VALOR_DEC PUNTO_COMA
         {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> Faltó agregar el signo =.");:}|
-    definir Identificador como TIPO_DATO_DEC:s Asignacion_s PUNTO_COMA
-        {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> Faltó agregar el valor inicial del identificador.");:}
+    definir Identificador como TIPO_DATO_DEC Asignacion_s error:s PUNTO_COMA
+        {:editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> El valor proporcionado no es válido.");:}
 
 ;
 ASIGNACION ::= 
@@ -188,9 +193,6 @@ CONDICION_2 ::=
 CONDICION_3 ::=
     CONDICION_3 OP_LOGICO CONDICION_4 | 
     CONDICION_3 OP_REL CONDICION_4 |
-    CONDICION_3 OP_REL Texto |
-    CONDICION_3 OP_REL Decimal |
-    CONDICION_3 OP_REL Numero |
     Texto OP_REL CONDICION_3 |
     Decimal OP_REL CONDICION_3 |
     Numero OP_REL CONDICION_3 |
@@ -199,7 +201,7 @@ CONDICION_3 ::=
 CONDICION_4 ::=
     verdadero |
     falso |
-    Identificador |
+    EXPRESION |
     Identificador PUNTO estado |
     Par_a CONDICION Par_c |
     no Par_a CONDICION Par_c
@@ -380,7 +382,7 @@ PARAMETRO_TEXTO::= Identificador | Texto ;
 INC_DEC ::= incrementar | decrementar;
 TIPO_DATO_DEC ::= entero{:RESULT = "entero";:}|decimal{:RESULT = "decimal";:}|logico{:RESULT = "logico";:}|texto{:RESULT = "texto";:}|display{:RESULT = "display";:}|motor{:RESULT = "motor";:}|led{:RESULT = "led";:}|ledRGB{:RESULT = "ledRGB";:} |
     error:s {:RESULT = "";
-        editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> Tipo de dato no válido.");:};
+        editor.ERRORES.add("Error de sintáxis en la línea " + (sright + 1)+ " --> Se esperaba un tipo de dato.");:};
 TIPO_VALOR_DEC ::= Numero:s {:RESULT = s;:} | Decimal:s {:RESULT =s ;:}| Texto:s {:RESULT = s;:}| VALOR_LOGICO_DEC:s {:RESULT = s;:};
 VALOR_LOGICO_DEC ::= verdadero {:RESULT = "verdadero";:} | falso{:RESULT = "falso";:};
 OP_LOGICO ::= y | o;

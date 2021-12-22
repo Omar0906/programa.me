@@ -1,8 +1,8 @@
-inicio_programa programa_Ejemplo
+inicio_programa fe43
 	inicio_var
 		definir x como entero = 23;
 	fin_var
-	inicio_bloque
+	inicio_bloqu
 			decrementar x;
 			incrementar r;
 			x = 23;
