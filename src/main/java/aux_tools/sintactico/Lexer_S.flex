@@ -23,7 +23,8 @@ EndOfLineComment     = "//" {InputCharacter}* {LineTerminator}?
 DocumentationComment = "/**" {CommentContent} "*"+ "/"
 CommentContent       = ( [^*] | \*+ [^/*] )*
 
-STRING_TEXT=(\\\"|[^\n\r\"]|\\{WhiteSpace}+\\)*
+STRING_TEXT = (\\\"|[^\n\r\"]|\\{WhiteSpace}+\\)*
+
 StringCharacter = [^\r\n\"\\]
 
 %{
@@ -47,15 +48,19 @@ StringCharacter = [^\r\n\"\\]
     "decimal" {return new Symbol(sym.decimal,(int) yychar,yyline,yytext());} 
     "entero" {return new Symbol(sym.entero,(int) yychar,yyline,yytext());} 
     "texto" {return new Symbol(sym.texto,(int) yychar,yyline,yytext());} 
-    "logico" {return new Symbol(sym.logico,(int) yychar,yyline,yytext());} 
+    "logico" {return new Symbol(sym.logico,(int) yychar,yyline,yytext());}    
     
+
     "tiempo" {return new Symbol(sym.tiempo,(int) yychar,yyline,yytext());} 
+    
+
     "rojo" {return new Symbol(sym.rojo,(int) yychar,yyline,yytext());} 
     "verde" {return new Symbol(sym.verde,(int) yychar,yyline,yytext());} 
     "azul" {return new Symbol(sym.azul,(int) yychar,yyline,yytext());} 
     "visualizar" {return new Symbol(sym.visualizar,(int) yychar,yyline,yytext());} 
     
-
+    
+    "detener" {return new Symbol(sym.detener,(int) yychar,yyline,yytext());} 
     "arreglo" {return new Symbol(sym.arreglo,(int) yychar,yyline,yytext());} 
     "arregloBi" {return new Symbol(sym.arregloBi,(int) yychar,yyline,yytext());} 
     "apagar" {return new Symbol(sym.apagar,(int) yychar,yyline,yytext());} 
@@ -65,7 +70,7 @@ StringCharacter = [^\r\n\"\\]
     "definir" {return new Symbol(sym.definir,(int) yychar,yyline,yytext());}  
     "derecha" {return new Symbol(sym.derecha,(int) yychar,yyline,yytext());}  
     "display" {return new Symbol(sym.display,(int) yychar,yyline,yytext());}   
-    "facil_bloque" {return new Symbol(sym.facil_bloque,(int) yychar,yyline,yytext());}  
+    "fin_bloque" {return new Symbol(sym.fin_bloque,(int) yychar,yyline,yytext());}  
     "facil_hacer_mientras" {return new Symbol(sym.facil_hacer_mientras,(int) yychar,yyline,yytext());}  
     "facil_mientras" {return new Symbol(sym.facil_mientras,(int) yychar,yyline,yytext());}  
     "facil_repetir" {return new Symbol(sym.facil_repetir,(int) yychar,yyline,yytext());}  
@@ -87,8 +92,7 @@ StringCharacter = [^\r\n\"\\]
     "decrementar" {return new Symbol(sym.decrementar,(int) yychar,yyline,yytext());}  
     "izquierda" {return new Symbol(sym.izquierda,(int) yychar,yyline,yytext());}  
     "led" {return new Symbol(sym.led,(int) yychar,yyline,yytext());}  
-    "led_rgb" {return new Symbol(sym.led_rgb,(int) yychar,yyline,yytext());}  
-    "led_semaforo" {return new Symbol(sym.led_semaforo,(int) yychar,yyline,yytext());}  
+    "ledRGB" {return new Symbol(sym.ledRGB,(int) yychar,yyline,yytext());} 
     "mientras" {return new Symbol(sym.mientras,(int) yychar,yyline,yytext());}  
     "min" {return new Symbol(sym.min,(int) yychar,yyline,yytext());}  
     "mostrar" {return new Symbol(sym.mostrar,(int) yychar,yyline,yytext());} 
@@ -109,9 +113,9 @@ StringCharacter = [^\r\n\"\\]
     "y" {return new Symbol(sym.y,(int) yychar,yyline,yytext());}
     "o" {return new Symbol(sym.o,(int) yychar,yyline,yytext());}
     "no" {return new Symbol(sym.no,(int) yychar,yyline,yytext());}
+    "estado" {return new Symbol(sym.estado,(int) yychar,yyline,yytext());}
     {espacio} {/*Ignore*/}
     {Comment} {/*Ignore*/}
-    
     "\"" { yybegin(STRING); string.setLength(0); string.append("\""); }
     ";" {return new Symbol(sym.PUNTO_COMA,(int) yychar,yyline,yytext());}
     "." {return new Symbol(sym.PUNTO,(int) yychar,yyline,yytext());}

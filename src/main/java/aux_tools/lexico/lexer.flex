@@ -80,11 +80,10 @@ StringCharacter = [^\r\n\"\\]
     incluir |
     selector |
     salir |
+    detener |
     para |
     tiempo |
-    led_semaforo |
-    led_panel |
-    led_rgb |
+    ledRGB |
     intensidad |
     rojo |
     verde |

@@ -4,7 +4,6 @@
  */
 package mx.tectepic.programa.me;
 
-import java_cup.runtime.Symbol;
 import aux_tools.EstiloDialog;
 import aux_tools.FontSelector;
 import aux_tools.Simbolo;
@@ -27,7 +26,6 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java_cup.runtime.Symbol;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -545,7 +543,7 @@ public class Editor extends javax.swing.JFrame {
                                     errores = errores + "Una llave de apertura \"{\" esta sin cerrar";
                                 }
                             }
-                          //  txtMensajes.setText(errores);
+                            //  txtMensajes.setText(errores);
                         }
                     } else
                     {
@@ -643,7 +641,7 @@ public class Editor extends javax.swing.JFrame {
         {
             System.out.println(ex);
         }
-            }
+    }
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
         if (cmbTipo.getSelectedIndex() == 0)
         {
@@ -685,7 +683,8 @@ public class Editor extends javax.swing.JFrame {
                 txtMensajes.append(cad);
             } else
             {
-                txtMensajes.append("Análisis sintáctico finalizado correctamente");
+                txtMensajes.append("Análisis sintáctico finalizado.");
+                txtMensajes.append("\nNo se encontraron errores en el programa.");
             }
         }
     }//GEN-LAST:event_btnAnalizarActionPerformed
@@ -761,8 +760,6 @@ public class Editor extends javax.swing.JFrame {
             }
         } else
         {
-            texto.setText("");
-
         }
         //this.tblLexico
     }//GEN-LAST:event_btnNuevoActionPerformed
@@ -890,6 +887,7 @@ public class Editor extends javax.swing.JFrame {
                 if (mensaje != null)
                 {
                     JOptionPane.showMessageDialog(null, mensaje);
+                    this.setTitle(archivo.getName());
                     esNuevo = false;
                 } else
                 {
@@ -897,7 +895,7 @@ public class Editor extends javax.swing.JFrame {
                 }
             } else
             {
-                JOptionPane.showMessageDialog(null, "extencion de archivo no valido");
+                JOptionPane.showMessageDialog(null, "Extensión de archivo no valida");
             }
         }
     }
@@ -912,13 +910,15 @@ public class Editor extends javax.swing.JFrame {
             if (mensaje != null)
             {
                 JOptionPane.showMessageDialog(null, mensaje);
+
+                this.setTitle(archivo.getName());
             } else
             {
                 JOptionPane.showMessageDialog(null, "Archivo no compatible");
             }
         } else
         {
-            JOptionPane.showMessageDialog(null, "extencion de archivo no valido");
+            JOptionPane.showMessageDialog(null, "Extensión de archivo no válida");
         }
         //}
     }
@@ -964,6 +964,7 @@ public class Editor extends javax.swing.JFrame {
                 if (archivo.getName().endsWith("pme"))
                 {
                     String documento = AbrirArchivo(archivo);
+                    this.setTitle(archivo.getName());
                     texto.setText(documento);
                 } else
                 {
