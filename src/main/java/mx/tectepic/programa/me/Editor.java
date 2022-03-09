@@ -667,6 +667,7 @@ public class Editor extends javax.swing.JFrame {
             }
             ERRORES.clear();
             AnalisisLexico();
+            tablaSimbolos_id.clear();
             String ST = texto.getText();
             Syntax s = new Syntax(new Lexer_S(new StringReader(ST)));
             s.setEditor(this);

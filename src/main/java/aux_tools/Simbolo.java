@@ -13,7 +13,12 @@ public class Simbolo implements Comparable<Simbolo> {
         this.linea_declaracion = linea_declaracion;
         this.valor = valor;
     }
-
+    public Simbolo(String lexema, String tipo, Object valor) {
+        this.lexema = lexema;
+        this.tipo = tipo;
+        this.valor = valor;
+    }
+    
     public Simbolo(String lexema, int linea_declaracion) {
         this.lexema = lexema;
         this.linea_declaracion = linea_declaracion;

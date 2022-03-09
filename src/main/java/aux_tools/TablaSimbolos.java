@@ -61,6 +61,17 @@ public class TablaSimbolos {
         }
         return false;
     }
+    public Simbolo getToken(String t) {
+        if(this.ListaTokens.isEmpty()){
+            return null;
+        }
+        for (Simbolo tokens : this.ListaTokens) {
+            if (tokens.getLexema().equals(t)) {
+                return tokens;
+            }
+        }
+        return null;
+    }
     public void ubicarToken(String t,String tipo) {
         if(this.ListaTokens.isEmpty()){
             return;

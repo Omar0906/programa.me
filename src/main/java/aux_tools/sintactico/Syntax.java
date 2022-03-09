@@ -8,6 +8,7 @@ package aux_tools.sintactico;
 import java_cup.runtime.Symbol;
 import mx.tectepic.programa.me.Editor;
 import aux_tools.sintactico.ErroresSintacticos;
+import aux_tools.Simbolo;
 import java_cup.runtime.XMLElement;
 
 /** CUP v0.11b 20160615 (GIT 4ac7450) generated parser.
@@ -1722,6 +1723,7 @@ public class Syntax extends java_cup.runtime.lr_parser {
 
 
  //Codigo del usuario
+    private String[] componentes = {"motor","led","display"};
     private Editor editor;
     public void setEditor(Editor padre){
         this.editor = padre;
@@ -2182,7 +2184,13 @@ class CUP$Syntax$actions {
 		int tdleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).left;
 		int tdright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).right;
 		Object td = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).value;
+		int sleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).left;
+		int sright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).right;
+		Object s = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.peek()).value;
 		if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " ya ha sido declarada."));
+        }else{
+            editor.tablaSimbolos_id.addToken(new Simbolo(id.toString(), sright));
             editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
         }
         System.out.println("Se encontro una declaracion de un "  + td.toString());
@@ -2431,9 +2439,15 @@ class CUP$Syntax$actions {
 		int valleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).left;
 		int valright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).right;
 		Object val = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).value;
+		int sleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).left;
+		int sright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).right;
+		Object s = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.peek()).value;
 		if(editor.tablaSimbolos_id.buscarToken(id.toString())){
-            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),val);
-        }System.out.println("Se encontro una declaracion con asignacion de un " + td.toString());
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " ya ha sido declarada."));
+        }else{
+            editor.tablaSimbolos_id.addToken(new Simbolo(id.toString(), sright));
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(), val);
+        } 
               CUP$Syntax$result = parser.getSymbolFactory().newSymbol("DECLARACION_A",6, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-6)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
             }
           return CUP$Syntax$result;
@@ -2546,7 +2560,26 @@ class CUP$Syntax$actions {
           case 65: // ASIGNACION ::= Identificador Asignacion_s Texto 
             {
               Object RESULT =null;
-		System.out.println("Se ha encontrado ASIGNACION");
+		int idleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).right;
+		Object id = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).value;
+		int sleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).left;
+		int sright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).right;
+		Object s = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).value;
+		int valleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).left;
+		int valright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).right;
+		String val = (String)((java_cup.runtime.Symbol) CUP$Syntax$stack.peek()).value;
+		
+        if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            if(editor.tablaSimbolos_id.getToken(id.toString()).getTipo() == "texto"){
+                editor.tablaSimbolos_id.updateToken(new Simbolo(id.toString(),"texto",editor.tablaSimbolos_id.getToken(id.toString()).getLinea_declaracion(),val));
+            }else{
+                editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable \"" + id.toString() + "\" no esta declarada como tipo texto."));
+            }
+        }else{
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " no ha sido declarada"));
+        }
+        System.out.println("Se ha encontrado ASIGNACION");
               CUP$Syntax$result = parser.getSymbolFactory().newSymbol("ASIGNACION",8, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
             }
           return CUP$Syntax$result;
@@ -2555,7 +2588,26 @@ class CUP$Syntax$actions {
           case 66: // ASIGNACION ::= Identificador Asignacion_s verdadero 
             {
               Object RESULT =null;
-		System.out.println("Se ha encontrado ASIGNACION");
+		int idleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).right;
+		Object id = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).value;
+		int sleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).left;
+		int sright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).right;
+		Object s = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).value;
+		int valleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).left;
+		int valright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).right;
+		Object val = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.peek()).value;
+		
+        if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            if(editor.tablaSimbolos_id.getToken(id.toString()).getTipo() == "logico"){
+                editor.tablaSimbolos_id.updateToken(new Simbolo(id.toString(),"logico",editor.tablaSimbolos_id.getToken(id.toString()).getLinea_declaracion(),val));
+            }else{
+                editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable \"" + id.toString() + "\" no esta declarada como tipo logico."));
+            }
+        }else{
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " no ha sido declarada"));
+        }
+        System.out.println("Se ha encontrado ASIGNACION");
               CUP$Syntax$result = parser.getSymbolFactory().newSymbol("ASIGNACION",8, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
             }
           return CUP$Syntax$result;
@@ -2564,7 +2616,26 @@ class CUP$Syntax$actions {
           case 67: // ASIGNACION ::= Identificador Asignacion_s falso 
             {
               Object RESULT =null;
-		System.out.println("Se ha encontrado ASIGNACION");
+		int idleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).left;
+		int idright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).right;
+		Object id = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)).value;
+		int sleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).left;
+		int sright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).right;
+		Object s = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.elementAt(CUP$Syntax$top-1)).value;
+		int valleft = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).left;
+		int valright = ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()).right;
+		Object val = (Object)((java_cup.runtime.Symbol) CUP$Syntax$stack.peek()).value;
+		
+        if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            if(editor.tablaSimbolos_id.getToken(id.toString()).getTipo() == "logico"){
+                editor.tablaSimbolos_id.updateToken(new Simbolo(id.toString(),"logico",editor.tablaSimbolos_id.getToken(id.toString()).getLinea_declaracion(),val));
+            }else{
+                editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable \"" + id.toString() + "\" no esta declarada como tipo logico."));
+            }
+        }else{
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " no ha sido declarada"));
+        }
+        System.out.println("Se ha encontrado ASIGNACION");
               CUP$Syntax$result = parser.getSymbolFactory().newSymbol("ASIGNACION",8, ((java_cup.runtime.Symbol)CUP$Syntax$stack.elementAt(CUP$Syntax$top-2)), ((java_cup.runtime.Symbol)CUP$Syntax$stack.peek()), RESULT);
             }
           return CUP$Syntax$result;

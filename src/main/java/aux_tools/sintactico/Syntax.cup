@@ -2,8 +2,10 @@ package aux_tools.sintactico;
 import java_cup.runtime.Symbol;
 import mx.tectepic.programa.me.Editor;
 import aux_tools.sintactico.ErroresSintacticos;
+import aux_tools.Simbolo;
 parser code
 {: //Codigo del usuario
+    private String[] componentes = {"motor","led","display"};
     private Editor editor;
     public void setEditor(Editor padre){
         this.editor = padre;
@@ -127,8 +129,11 @@ DECLARACIONES ::=
         {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Declaración no válida."));:}
 ;
 DECLARACION ::= 
-    definir Identificador:id como TIPO_DATO_DEC:td PUNTO_COMA
+    definir Identificador:id como TIPO_DATO_DEC:td PUNTO_COMA:s
         {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " ya ha sido declarada."));
+        }else{
+            editor.tablaSimbolos_id.addToken(new Simbolo(id.toString(), sright));
             editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
         }
         System.out.println("Se encontro una declaracion de un "  + td.toString());:}|
@@ -168,10 +173,13 @@ DECLARACION_ARREGLO ::=
     
 ;
 DECLARACION_A ::= 
-    definir Identificador:id como TIPO_DATO_DEC:td Asignacion_s TIPO_VALOR_DEC:val PUNTO_COMA
+    definir Identificador:id como TIPO_DATO_DEC:td Asignacion_s TIPO_VALOR_DEC:val PUNTO_COMA:s
         {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
-            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),val);
-        }System.out.println("Se encontro una declaracion con asignacion de un " + td.toString());:} |
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " ya ha sido declarada."));
+        }else{
+            editor.tablaSimbolos_id.addToken(new Simbolo(id.toString(), sright));
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(), val);
+        } :}|
     definir Identificador:id como TIPO_DATO_DEC:td Asignacion_s Identificador:val PUNTO_COMA
         {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
             editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),val);
@@ -193,9 +201,39 @@ DECLARACION_A ::=
 
 ;
 ASIGNACION ::= 
-    Identificador Asignacion_s Texto{:System.out.println("Se ha encontrado ASIGNACION");:} |
-    Identificador Asignacion_s verdadero{:System.out.println("Se ha encontrado ASIGNACION");:} |
-    Identificador Asignacion_s falso{:System.out.println("Se ha encontrado ASIGNACION");:} |
+    Identificador:id Asignacion_s:s Texto:val {:
+        if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            if(editor.tablaSimbolos_id.getToken(id.toString()).getTipo() == "texto"){
+                editor.tablaSimbolos_id.updateToken(new Simbolo(id.toString(),"texto",editor.tablaSimbolos_id.getToken(id.toString()).getLinea_declaracion(),val));
+            }else{
+                editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable \"" + id.toString() + "\" no esta declarada como tipo texto."));
+            }
+        }else{
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " no ha sido declarada"));
+        }
+        System.out.println("Se ha encontrado ASIGNACION");:} |
+    Identificador:id Asignacion_s:s verdadero:val{:
+        if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            if(editor.tablaSimbolos_id.getToken(id.toString()).getTipo() == "logico"){
+                editor.tablaSimbolos_id.updateToken(new Simbolo(id.toString(),"logico",editor.tablaSimbolos_id.getToken(id.toString()).getLinea_declaracion(),val));
+            }else{
+                editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable \"" + id.toString() + "\" no esta declarada como tipo logico."));
+            }
+        }else{
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " no ha sido declarada"));
+        }
+        System.out.println("Se ha encontrado ASIGNACION");:} |
+    Identificador:id Asignacion_s:s falso:val{:
+        if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            if(editor.tablaSimbolos_id.getToken(id.toString()).getTipo() == "logico"){
+                editor.tablaSimbolos_id.updateToken(new Simbolo(id.toString(),"logico",editor.tablaSimbolos_id.getToken(id.toString()).getLinea_declaracion(),val));
+            }else{
+                editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable \"" + id.toString() + "\" no esta declarada como tipo logico."));
+            }
+        }else{
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " no ha sido declarada"));
+        }
+        System.out.println("Se ha encontrado ASIGNACION");:} |
     Identificador Asignacion_s EXPRESION{:System.out.println("Se ha encontrado ASIGNACION");:} |
     Identificador Asignacion_s:s{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falto poner el valor a asignar"));:} |
     Identificador:s Texto{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te falto poner el signo ="));:} |

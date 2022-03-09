@@ -1,29 +1,17 @@
-inicio_programa nombre_del_programa
-    usar "PICXX";
-    inicio_var
-			definir var1 como entero;
-			definir ban como logico = erdadero;
-			definir var2 como entero = 32;
-			definir dec2 como decimal = 32.4;
-			definir mot1 como motor;
-			definir mot2 como motor;
-			definir l como led;
-    fin_var
-    inicio_bloque
-			mot1.asignar(1);
-			mot2.asignar(2);	
-		si(ban){
-				mot1.girar.derecha;
-				mot2.girar.izquierda;
-			}
-		mientras(var2!=0){
-			decrementar var2;
-		}
-		facil_sino(ban != verdadero,incrementar x,mostrar "hola");
-		mot1.detener;
-		mot2.detener;
-		si(l.estado){
-			l.apagar;
-		}
-    fin_bloque
+inicio_programa fe43
+	usar "PIC18";
+	inicio_var
+		definir motor1 como motor;
+		definir motor1 como motor;
+		definir led1 como led;
+		definir motor1 como logico;
+	fin_var
+	inicio_bloque
+		nume = verdadero;
+		motor1.asignar(2);
+		motor2.asignar(3);
+		motor1.girar.derecha;
+		motor2.girar.derecha;
+		led1.prender;
+	fin_bloque
 fin_programa
