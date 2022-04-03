@@ -149,18 +149,24 @@ DECLARACION ::=
         {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Falta agregar el tipo de dato."));:}
     ;
 DECLARACION_ARREGLO ::=
-    definir Identificador:id como arreglo:td Cor_a Numero Cor_c PUNTO_COMA
+    definir Identificador:id como arreglo:td Cor_a Numero:n Cor_c PUNTO_COMA
         {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
-            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " ya ha sido declarada."));
+        }else{
+            editor.tablaSimbolos_id.addToken(new Simbolo(id.toString(), sright));
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),Integer.parseInt(n);
         }
         System.out.println("Se encontro una declaracion de un arreglo");:}|
     definir Identificador como arreglo Cor_a Numero Cor_c:s {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Falta agregar el ;"));:}|
     definir Identificador como arreglo:s Numero Cor_c PUNTO_COMA{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó abrir el corchete para el arreglo."));:}|
     definir Identificador como arreglo Cor_a:s Cor_c PUNTO_COMA{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó agregar el tamaño  del arreglo."));:}|
     definir Identificador como arreglo Cor_a Numero:s PUNTO_COMA{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó cerrar el corchete del arreglo."));:}|
-    definir Identificador:id como arregloBi:td Cor_a Numero Cor_c  Cor_a Numero Cor_c PUNTO_COMA
+    definir Identificador:id como arregloBi:td Cor_a Numero:n Cor_c  Cor_a Numero:m Cor_c PUNTO_COMA
         {:if(editor.tablaSimbolos_id.buscarToken(id.toString())){
-            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " ya ha sido declarada."));
+        }else{
+            editor.tablaSimbolos_id.addToken(new Simbolo(id.toString(), sright));
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString(),new ArrayList<Integer>(List.of(Integer.parseInt(n),Integer.parseInt(m))));
         }
         System.out.println("Se encontro una declaracion de un arregloBi");:} |
     definir Identificador como arregloBi Cor_a Numero Cor_c  Cor_a Numero Cor_c:s {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Te faltó el ;"));:}|
@@ -223,6 +229,17 @@ ASIGNACION ::=
             editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " no ha sido declarada"));
         }
         System.out.println("Se ha encontrado ASIGNACION");:} |
+    Identificador:id Asignacion_s:s PARAMETRO_ENTERO:val{:
+        if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            if(editor.tablaSimbolos_id.getToken(id.toString()).getTipo() == "entero"){
+                editor.tablaSimbolos_id.updateToken(new Simbolo(id.toString(),"entero",editor.tablaSimbolos_id.getToken(id.toString()).getLinea_declaracion(),val));
+            }else{
+                editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable \"" + id.toString() + "\" no esta declarada como tipo logico."));
+            }
+        }else{
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " no ha sido declarada"));
+        }
+        System.out.println("Se ha encontrado ASIGNACION" + val);:} |
     Identificador:id Asignacion_s:s falso:val{:
         if(editor.tablaSimbolos_id.buscarToken(id.toString())){
             if(editor.tablaSimbolos_id.getToken(id.toString()).getTipo() == "logico"){
@@ -282,7 +299,7 @@ MOSTRAR_TEXTO ::=
 MANIPULAR_COMPONENTE ::=
     Identificador PUNTO prender {:System.out.println("Encontrado prender");:}|
     Identificador PUNTO apagar {:System.out.println("Encontrado apagar");:} |
-    Identificador PUNTO asignar Par_a PINES Par_c {:System.out.println("Encontrado asignar");:} |
+    Identificador:id PUNTO asignar Par_a PINES Par_c {:System.out.println("Encontrado asignar");:} |
     Identificador PUNTO asignar:s  PINES Par_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Faltó abrir el paréntesis."));:} |
     Identificador PUNTO asignar Par_a:s  Par_c {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Faltó ingresar la lista de pines."));:} |
     Identificador PUNTO asignar Par_a PINES:s {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Faltó cerrar el paréntesis."));:} |
@@ -294,6 +311,16 @@ MANIPULAR_COMPONENTE ::=
     Identificador PUNTO girar PUNTO DIRECCION Par_a error:s Par_c PUNTO_COMA
         {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Esta mal escrito el valor de tiempo. Recuerda que es un numero entero y ya sea seg, hr o min."));:}|
     Identificador PUNTO visualizar Par_a TEXTO Par_c{:System.out.println("\nEncontrado visualizar display");:} |
+    Identificador PUNTO visualizar Par_a Identificador:id Par_c{:System.out.println("\nEncontrado visualizar display");:}
+        if(editor.tablaSimbolos_id.buscarToken(id.toString())){
+            editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " ya ha sido declarada."));
+        }else{
+            if(!editor.tablaSimbolos_id.getToken(id).getTipo() == "texto"){
+                editor.ERRORES.add(new ErroresSintacticos(sright,"Error semántico en la línea " + (sright + 1)+ " --> La variable " + id.toString() + " no es de tipo cadena"));
+            }
+            editor.tablaSimbolos_id.addToken(new Simbolo(id.toString(), sright));
+            editor.tablaSimbolos_id.ubicarToken(id.toString(),td.toString());
+        } :}|
     Identificador PUNTO visualizar Par_a error:s Par_c{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> No se pudo identificar el texto a visualizar"));:} |
     Identificador PUNTO error:s{:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Esta mal escrita la función del componente."));:}
 ;
@@ -440,12 +467,12 @@ BLOQUE_SELECTOR ::= BLOQUE_SELECTOR caso Numero DosPuntos SENTENCIA salir PUNTO_
     error:s Lla_c:u {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Error en la sintáxis de los casos del selector."));
         System.out.println("Error en casos del selector, ir a llave en la línea " + uright);:}
 ;
-PARAMETRO_ENTERO::= Identificador | Numero ;
-PARAMETRO_TEXTO::= Identificador | Texto ;
+PARAMETRO_ENTERO::= Identificador:s {:RESULT = s;:}| Numero:s {:RESULT = s;:} ;
+PARAMETRO_TEXTO::= Identificador:s {:RESULT = s;:} | Texto:s {:RESULT = s;:} ;
 INC_DEC ::= incrementar | decrementar;
 TIPO_DATO_DEC ::= entero{:RESULT = "entero";:}|decimal{:RESULT = "decimal";:}|logico{:RESULT = "logico";:}|texto{:RESULT = "texto";:}|display{:RESULT = "display";:}|motor{:RESULT = "motor";:}|led{:RESULT = "led";:}|ledRGB{:RESULT = "ledRGB";:} | 
     error:s {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Tipo de dato no válido."));:};
 TIPO_VALOR_DEC ::= Numero:s {:RESULT = s;:} | Decimal:s {:RESULT =s ;:}| Texto:s {:RESULT = s;:}| VALOR_LOGICO_DEC:s {:RESULT = s;:} |
    error:s {:editor.ERRORES.add(new ErroresSintacticos(sright,"Error de sintáxis en la línea " + (sright + 1)+ " --> Se esperaba un valor."));:};
-VALOR_LOGICO_DEC ::= verdadero {:RESULT = "verdadero";:} | falso{:RESULT = "falso";:};
+VALOR_LOGICO_DEC ::= verdadero {:RESULT = "verdadero";:} | falso{:RESULT = "falso";:} | Identificador{:  :};
 OP_LOGICO ::= y | o;

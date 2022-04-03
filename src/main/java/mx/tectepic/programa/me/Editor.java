@@ -47,8 +47,8 @@ public class Editor extends javax.swing.JFrame {
         Document doc = texto.getDocument();
 
         // Listen for undo and redo events
-        doc.addUndoableEditListener((UndoableEditEvent evt) ->
-        {
+        doc.addUndoableEditListener((UndoableEditEvent evt)
+                -> {
             undo.addEdit(evt.getEdit());
         });
 
@@ -56,14 +56,11 @@ public class Editor extends javax.swing.JFrame {
         texto.getActionMap().put("Undo",
                 new AbstractAction("Undo") {
             public void actionPerformed(ActionEvent evt) {
-                try
-                {
-                    if (undo.canUndo())
-                    {
+                try {
+                    if (undo.canUndo()) {
                         undo.undo();
                     }
-                } catch (CannotUndoException e)
-                {
+                } catch (CannotUndoException e) {
                 }
             }
         });
@@ -75,14 +72,11 @@ public class Editor extends javax.swing.JFrame {
         texto.getActionMap().put("Redo",
                 new AbstractAction("Redo") {
             public void actionPerformed(ActionEvent evt) {
-                try
-                {
-                    if (undo.canRedo())
-                    {
+                try {
+                    if (undo.canRedo()) {
                         undo.redo();
                     }
-                } catch (CannotRedoException e)
-                {
+                } catch (CannotRedoException e) {
                 }
             }
         });
@@ -107,6 +101,7 @@ public class Editor extends javax.swing.JFrame {
         modelo = (DefaultTableModel) this.tblLexico.getModel();
         tpTablas.setVisible(true);
         tablaSimbolos_id = new TablaSimbolos();
+        tpTablas.setVisible(false);
         manager();
     }
 
@@ -133,9 +128,6 @@ public class Editor extends javax.swing.JFrame {
         jSeparator3 = new javax.swing.JToolBar.Separator();
         btnDeshacer = new javax.swing.JButton();
         btnRehacer = new javax.swing.JButton();
-        pnlAnalisi = new javax.swing.JPanel();
-        cmbTipo = new javax.swing.JComboBox<>();
-        jLabel2 = new javax.swing.JLabel();
         btnAnalizar = new javax.swing.JButton();
         btnTablas = new javax.swing.JButton();
         jSeparator5 = new javax.swing.JToolBar.Separator();
@@ -276,43 +268,9 @@ public class Editor extends javax.swing.JFrame {
         });
         jToolBar1.add(btnRehacer);
 
-        cmbTipo.setFont(new java.awt.Font("Consolas", 0, 12)); // NOI18N
-        cmbTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Análisis léxico", "Análisis sintáctico" }));
-        cmbTipo.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cmbTipoActionPerformed(evt);
-            }
-        });
-
-        jLabel2.setFont(new java.awt.Font("Consolas", 0, 13)); // NOI18N
-        jLabel2.setText("Tipo de análisis:");
-
-        javax.swing.GroupLayout pnlAnalisiLayout = new javax.swing.GroupLayout(pnlAnalisi);
-        pnlAnalisi.setLayout(pnlAnalisiLayout);
-        pnlAnalisiLayout.setHorizontalGroup(
-            pnlAnalisiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(pnlAnalisiLayout.createSequentialGroup()
-                .addGap(2, 2, 2)
-                .addGroup(pnlAnalisiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        pnlAnalisiLayout.setVerticalGroup(
-            pnlAnalisiLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlAnalisiLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cmbTipo, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
-        );
-
-        jToolBar1.add(pnlAnalisi);
-
         btnAnalizar.setFont(new java.awt.Font("Consolas", 0, 13)); // NOI18N
         btnAnalizar.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mx/tectepic/programa/iconos/yes.png"))); // NOI18N
-        btnAnalizar.setText("Analizar");
+        btnAnalizar.setText("Compilar");
         btnAnalizar.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         btnAnalizar.setFocusable(false);
         btnAnalizar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -425,7 +383,7 @@ public class Editor extends javax.swing.JFrame {
                         .addComponent(jLabel1)
                         .addGap(9, 9, 9)
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 35, Short.MAX_VALUE))
+                        .addGap(0, 212, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(vtnTexto)
@@ -473,19 +431,16 @@ public class Editor extends javax.swing.JFrame {
     private void btnConfiguracionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfiguracionActionPerformed
         EstiloDialog ed = new EstiloDialog(this);
         int[] res = ed.showDialog();
-        if (res != null)
-        {
+        if (res != null) {
             Font temp = FontSelector.select(res);
             cambiarFuente(temp);
         }
     }//GEN-LAST:event_btnConfiguracionActionPerformed
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {
-        if (esNuevo)
-        {
+        if (esNuevo) {
             guardarComo();
 
-        } else if (!estaGuardado || !esNuevo)
-        {
+        } else if (!estaGuardado || !esNuevo) {
             guardar();
             estaGuardado = true;
         }
@@ -496,80 +451,60 @@ public class Editor extends javax.swing.JFrame {
         tablaSimbolos_id = new TablaSimbolos();
         File archivo = new File("archivo.txt");
         PrintWriter escribir;
-        try
-        {
+        try {
             escribir = new PrintWriter(archivo);
             escribir.print(texto.getText());
             escribir.close();
-        } catch (FileNotFoundException ex)
-        {
+        } catch (FileNotFoundException ex) {
         }
-        try
-        {
+        try {
             modelo.setRowCount(0);
             String errores = "";
             boolean erro = false;
             Reader lector = new BufferedReader(new FileReader("archivo.txt"));
             Lexer lexer = new Lexer(lector);
-            while (true)
-            {
+            while (true) {
                 Tokens tokens = lexer.yylex();
-                if (tokens == null)
-                {
+                if (tokens == null) {
                     txtMensajes.setText("Terminado analisis lexico\n");
-                    if (!erro)
-                    {
-                        if (cont_par_a > cont_par_c || cont_lla_a > cont_lla_c || cont_cor_a > cont_cor_c)
-                        {
-                            if (cont_par_a > cont_par_c)
-                            {
+                    if (!erro) {
+                        if (cont_par_a > cont_par_c || cont_lla_a > cont_lla_c || cont_cor_a > cont_cor_c) {
+                            if (cont_par_a > cont_par_c) {
                                 int cant1 = cont_par_a - cont_par_c;
-                                for (int i = 0; i < cant1; i++)
-                                {
+                                for (int i = 0; i < cant1; i++) {
                                     errores = errores + "Un paréntesis de apertura \"(\" esta sin cerrar";
                                 }
                             }
-                            if (cont_cor_a > cont_cor_c)
-                            {
+                            if (cont_cor_a > cont_cor_c) {
                                 int cant2 = cont_cor_a - cont_cor_c;
-                                for (int i = 0; i < cant2; i++)
-                                {
+                                for (int i = 0; i < cant2; i++) {
                                     errores = errores + "Un corchete de apertura \"[\" esta sin cerrar";
                                 }
                             }
-                            if (cont_lla_a > cont_lla_c)
-                            {
+                            if (cont_lla_a > cont_lla_c) {
                                 int cant3 = cont_lla_a - cont_lla_c;
-                                for (int i = 0; i < cant3; i++)
-                                {
+                                for (int i = 0; i < cant3; i++) {
                                     errores = errores + "Una llave de apertura \"{\" esta sin cerrar";
                                 }
                             }
                             //  txtMensajes.setText(errores);
                         }
-                    } else
-                    {
-                        if (cont_par_a > cont_par_c)
-                        {
+                    } else {
+                        if (cont_par_a > cont_par_c) {
                             int cant1 = cont_par_a - cont_par_c;
-                            for (int i = 0; i < cant1; i++)
-                            {
+                            for (int i = 0; i < cant1; i++) {
                                 errores = errores + "Un paréntesis de apertura \"(\" esta sin cerrar";
                             }
-                            if (cont_cor_a > cont_cor_c)
-                            {
+                            if (cont_cor_a > cont_cor_c) {
                                 int cant2 = cont_cor_a - cont_cor_c;
-                                for (int i = 0; i < cant2; i++)
-                                {
+                                for (int i = 0; i < cant2; i++) {
                                     errores = errores + "Un corchete de apertura \"[\" esta sin cerrar";
                                 }
                             }
                         }
-                        if (cont_lla_a > cont_lla_c)
-                        {
+                        if (cont_lla_a > cont_lla_c) {
                             int cant3 = cont_lla_a - cont_lla_c;
-                            for (int i = 0; i < cant3; i++)
-                            {
+                            for (int i = 0; i < cant3; i++) {
                                 errores = errores + "Una llave de apertura \"{\" esta sin cerrar";
                             }
                         }
@@ -577,8 +512,7 @@ public class Editor extends javax.swing.JFrame {
                     }
                     break;
                 }
-                switch (tokens)
-                {
+                switch (tokens) {
                     case ERROR:
                         erro = true;
                         errores = errores + lexer.msg + "[" + lexer.lexeme + "]" + " ------ en la línea " + lexer.linea + "\n";
@@ -635,22 +569,20 @@ public class Editor extends javax.swing.JFrame {
                         break;
                 }
             }
-            if (erro)
-            {
+            if (erro) {
                 txtMensajes.setText(errores);
             }
-        } catch (Exception ex)
-        {
+        } catch (Exception ex) {
             System.out.println(ex);
         }
     }
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
-        if(esNuevo){
+        if (esNuevo) {
             guardarComo();
-        }else{
+        } else {
             guardar();
         }
-        if (cmbTipo.getSelectedIndex() == 0)
+        /*if (cmbTipo.getSelectedIndex() == 0)
         {
             if (texto.getText().trim().isEmpty())
             {
@@ -693,47 +625,57 @@ public class Editor extends javax.swing.JFrame {
                 txtMensajes.append("Análisis sintáctico finalizado.");
                 txtMensajes.append("\nNo se encontraron errores en el programa.");
             }
+        }*/
+        if (texto.getText().trim().isEmpty()) {
+            txtMensajes.setText("No hay texto para analizar");
+            return;
+        }
+        ERRORES.clear();
+        AnalisisLexico();
+        tablaSimbolos_id.clear();
+        String ST = texto.getText();
+        Syntax s = new Syntax(new Lexer_S(new StringReader(ST)));
+        s.setEditor(this);
+        try {
+            s.parse();
+        } catch (Exception ex) {
+            ERRORES.add(new ErroresSintacticos(0, "Error de sintaxis detectados, porfavor revise las sentencias"));
+            System.out.println(ex.getMessage());
+        }
+        if (!this.ERRORES.isEmpty()) {
+            Collections.sort(ERRORES);
+            String cad = "\nErrores encontrados durante el análisis sintáctico: " + (ERRORES.size()) + " error(es)\n";
+            for (int i = 0; i < ERRORES.size(); i++) {
+                cad += "ERROR " + (i + 1) + ": " + ERRORES.get(i).toString() + "\n";
+            }
+            txtMensajes.append(cad);
+        } else {
+            txtMensajes.append("Análisis sintáctico finalizado.");
+            txtMensajes.append("\nNo se encontraron errores en el programa.");
         }
     }//GEN-LAST:event_btnAnalizarActionPerformed
     private void insertarSimboloLexico(String lexema, String componente, int linea) {
-        Object[] item =
-        {
-            lexema, componente, linea
-        };
+        Object[] item
+                = {
+                    lexema, componente, linea
+                };
         modelo.addRow(item);
     }
-    private void cmbTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbTipoActionPerformed
-        //Si es análisis léxico, se muestra la tabla donde se
-        //listaran lo lexemas encontrados
-        //Si es otro tipo, se oculta
-        if (cmbTipo.getSelectedIndex() == 0)
-        {
-            tpTablas.setVisible(true);
-        } else if (cmbTipo.getSelectedIndex() == 1)
-        {
-            tpTablas.setVisible(false);
-        }
-    }//GEN-LAST:event_cmbTipoActionPerformed
-
     private void btnTablasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTablasActionPerformed
         new Tabla(this).setVisible(true);
     }//GEN-LAST:event_btnTablasActionPerformed
 
     private void btnDeshacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeshacerActionPerformed
-        try
-        {
+        try {
             undo.undo();
-        } catch (CannotUndoException e)
-        {
+        } catch (CannotUndoException e) {
         }
     }//GEN-LAST:event_btnDeshacerActionPerformed
 
     private void btnRehacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRehacerActionPerformed
-        try
-        {
+        try {
             undo.redo();
-        } catch (CannotRedoException e)
-        {
+        } catch (CannotRedoException e) {
         }
     }//GEN-LAST:event_btnRehacerActionPerformed
 
@@ -741,33 +683,27 @@ public class Editor extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_vtnTextoKeyReleased
     private void btnNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNuevoActionPerformed
-        if (esNuevo)
-        {
+        if (esNuevo) {
             guardarComo();
         }
         int reply = JOptionPane.showConfirmDialog(null, "¿Desea abrir un archivo con la sintaxis básica de programa.me [.pme]",
                 "YES_NO_OPTION", JOptionPane.YES_NO_OPTION,
                 JOptionPane.INFORMATION_MESSAGE);
-        if (reply == JOptionPane.YES_OPTION)
-        {
+        if (reply == JOptionPane.YES_OPTION) {
 
             String ruta = new File("src\\main\\java\\aux_tools\\Nuevo programa.pme").getAbsolutePath();
             System.out.print(ruta);
             archivo = new File(ruta);
-            if (archivo.canRead())
-            {
-                if (archivo.getName().endsWith("pme"))
-                {
+            if (archivo.canRead()) {
+                if (archivo.getName().endsWith("pme")) {
                     String documento = AbrirArchivo(archivo);
                     this.setTitle(archivo.getName());
                     texto.setText(documento);
-                } else
-                {
+                } else {
                     JOptionPane.showMessageDialog(null, "Archivo no es compatible");
                 }
             }
-        } else
-        {
+        } else {
         }
         //this.tblLexico
     }//GEN-LAST:event_btnNuevoActionPerformed
@@ -784,27 +720,20 @@ public class Editor extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try
-        {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels())
-            {
-                if ("Nimbus".equals(info.getName()))
-                {
+        try {
+            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex)
-        {
+        } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(Editor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex)
-        {
+        } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(Editor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex)
-        {
+        } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(Editor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex)
-        {
+        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Editor.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
@@ -851,10 +780,8 @@ public class Editor extends javax.swing.JFrame {
     private javax.swing.JButton btnPegar;
     private javax.swing.JButton btnRehacer;
     private javax.swing.JButton btnTablas;
-    private javax.swing.JComboBox<String> cmbTipo;
     private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
@@ -865,7 +792,6 @@ public class Editor extends javax.swing.JFrame {
     private javax.swing.JToolBar.Separator jSeparator5;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JPanel listaTokens;
-    private javax.swing.JPanel pnlAnalisi;
     private javax.swing.JTable tblLexico;
     private javax.swing.JTabbedPane tpTablas;
     private javax.swing.JTextArea txtMensajes;
@@ -885,24 +811,19 @@ public class Editor extends javax.swing.JFrame {
     }
 
     private void guardarComo() {
-        if (seleccion.showDialog(null, "Guardar") == JFileChooser.APPROVE_OPTION)
-        {
+        if (seleccion.showDialog(null, "Guardar") == JFileChooser.APPROVE_OPTION) {
             archivo = seleccion.getSelectedFile();
-            if (archivo.getName().endsWith("pme"))
-            {
+            if (archivo.getName().endsWith("pme")) {
                 String Documento = texto.getText();
                 String mensaje = guardararchivo(archivo, Documento);
-                if (mensaje != null)
-                {
+                if (mensaje != null) {
                     JOptionPane.showMessageDialog(null, mensaje);
                     this.setTitle(archivo.getName());
                     esNuevo = false;
-                } else
-                {
+                } else {
                     JOptionPane.showMessageDialog(null, "Archivo no compatible");
                 }
-            } else
-            {
+            } else {
                 JOptionPane.showMessageDialog(null, "Extensión de archivo no valida");
             }
         }
@@ -911,21 +832,17 @@ public class Editor extends javax.swing.JFrame {
     private void guardar() {
         //if(seleccion.showDialog(null, "Guardar")==JFileChooser.APPROVE_OPTION){
         archivo = seleccion.getSelectedFile();
-        if (archivo.getName().endsWith("pme"))
-        {
+        if (archivo.getName().endsWith("pme")) {
             String Documento = texto.getText();
             String mensaje = guardararchivo(archivo, Documento);
-            if (mensaje != null)
-            {
+            if (mensaje != null) {
                 txtMensajes.setText(mensaje);
 
                 this.setTitle(archivo.getName());
-            } else
-            {
+            } else {
                 JOptionPane.showMessageDialog(null, "Archivo no compatible");
             }
-        } else
-        {
+        } else {
             JOptionPane.showMessageDialog(null, "Extensión de archivo no válida");
         }
         //}
@@ -933,50 +850,41 @@ public class Editor extends javax.swing.JFrame {
 
     public String guardararchivo(File archivo, String documento) {
         String mensaje = null;
-        try
-        {
+        try {
             salida = new FileOutputStream(archivo);
             byte[] bytxt = documento.getBytes();
             salida.write(bytxt);
 
             mensaje = "Archivo guardado";
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
         }
         return mensaje;
     }
 
     public String AbrirArchivo(File archivo) {
         String documento = "";
-        try
-        {
+        try {
             entrada = new FileInputStream(archivo);
             int ascii;
-            while ((ascii = entrada.read()) != -1)
-            {
+            while ((ascii = entrada.read()) != -1) {
                 char caracter = (char) ascii;
                 documento += caracter;
             }
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
         }
         return documento;
     }
 
     public void abrir() {
-        if (seleccion.showDialog(null, "Abrir") == JFileChooser.APPROVE_OPTION)
-        {
+        if (seleccion.showDialog(null, "Abrir") == JFileChooser.APPROVE_OPTION) {
             archivo = seleccion.getSelectedFile();
-            if (archivo.canRead())
-            {
-                if (archivo.getName().endsWith("pme"))
-                {
+            if (archivo.canRead()) {
+                if (archivo.getName().endsWith("pme")) {
                     String documento = AbrirArchivo(archivo);
                     this.setTitle(archivo.getName());
                     texto.setText(documento);
-                    esNuevo=false;
-                } else
-                {
+                    esNuevo = false;
+                } else {
                     JOptionPane.showMessageDialog(null, "Archivo no es compatible");
                 }
             }

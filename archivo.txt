@@ -2,11 +2,12 @@ inicio_programa fe43
 	usar "PIC18";
 	inicio_var
 		definir motor1 como motor;
-		definir motor1 como motor;
+		definir nume como logico;
+		definir val1 como entero;
 		definir led1 como led;
-		definir motor1 como logico;
 	fin_var
 	inicio_bloque
+		val1 = 2.3;
 		nume = verdadero;
 		motor1.asignar(2);
 		motor2.asignar(3);

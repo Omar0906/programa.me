@@ -89,6 +89,7 @@ public class TablaSimbolos {
             if (ListaTokens.get(l).getLexema().equals(t)) {
                 ListaTokens.get(l).setTipo(tipo);
                 ListaTokens.get(l).setValor(valor);
+                
             }
         }
     }
