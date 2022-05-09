@@ -7,12 +7,15 @@ inicio_programa fe43
 		definir led1 como led;
 	fin_var
 	inicio_bloque
-		val1 = 2.3;
 		nume = verdadero;
+		val1 = 2.;
 		motor1.asignar(2);
 		motor2.asignar(3);
 		motor1.girar.derecha;
 		motor2.girar.derecha;
 		led1.prender;
+		mientras(val1 < 10){
+			led1.prender;
+		}
 	fin_bloque
 fin_programa

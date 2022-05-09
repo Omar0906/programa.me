@@ -24,6 +24,7 @@ public class Tabla extends javax.swing.JDialog {
         this.setLocationRelativeTo(padre);
         rbPR.setFont(padre.getFont());
         rbTI.setFont(padre.getFont());
+        rbCodIntermedio.setFont(padre.getFont());
     }
 
     /**
@@ -39,14 +40,18 @@ public class Tabla extends javax.swing.JDialog {
         jPanel1 = new javax.swing.JPanel();
         rbPR = new javax.swing.JRadioButton();
         rbTI = new javax.swing.JRadioButton();
+        rbCodIntermedio = new javax.swing.JRadioButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tblTabla = new javax.swing.JTable();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        txtCodIntermedio = new javax.swing.JTextArea();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setMaximumSize(new java.awt.Dimension(700, 500));
 
         buttonGroup1.add(rbPR);
+        rbPR.setFont(new java.awt.Font("FantasqueSansMono Nerd Font Mono", 0, 14)); // NOI18N
         rbPR.setText("Palabras Resevadas");
         rbPR.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -55,10 +60,20 @@ public class Tabla extends javax.swing.JDialog {
         });
 
         buttonGroup1.add(rbTI);
+        rbTI.setFont(new java.awt.Font("FantasqueSansMono Nerd Font Mono", 0, 14)); // NOI18N
         rbTI.setText("Tabla de identificadores");
         rbTI.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rbTIActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(rbCodIntermedio);
+        rbCodIntermedio.setFont(new java.awt.Font("FantasqueSansMono Nerd Font Mono", 0, 14)); // NOI18N
+        rbCodIntermedio.setText("Código Intermedio");
+        rbCodIntermedio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbCodIntermedioActionPerformed(evt);
             }
         });
 
@@ -68,18 +83,21 @@ public class Tabla extends javax.swing.JDialog {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(rbTI)
-                    .addComponent(rbPR))
-                .addContainerGap(27, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(rbTI, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(rbPR)
+                    .addComponent(rbCodIntermedio, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(41, 41, 41)
                 .addComponent(rbPR)
-                .addGap(55, 55, 55)
+                .addGap(40, 40, 40)
                 .addComponent(rbTI)
+                .addGap(45, 45, 45)
+                .addComponent(rbCodIntermedio)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -93,17 +111,27 @@ public class Tabla extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(tblTabla);
 
+        txtCodIntermedio.setColumns(20);
+        txtCodIntermedio.setRows(5);
+        jScrollPane2.setViewportView(txtCodIntermedio);
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 696, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 653, Short.MAX_VALUE)))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 540, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 285, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 237, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -125,6 +153,7 @@ public class Tabla extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void rbPRActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbPRActionPerformed
+        txtCodIntermedio.setText("");
         Object[] columnNames = {"Palabra Reservada"};
         Object[][] data = {{"apagar"},
 {"arreglo"},
@@ -191,6 +220,7 @@ public class Tabla extends javax.swing.JDialog {
     }//GEN-LAST:event_rbPRActionPerformed
 
     private void rbTIActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbTIActionPerformed
+        txtCodIntermedio.setText("");
         Object[] columnNames = {"Lexema","Tipo","Linea de declaración","Valor"};
         padre.tablaSimbolos_id.sortTabla();
         ArrayList<Simbolo> lista = padre.tablaSimbolos_id.verTablaSimbolos();
@@ -200,6 +230,14 @@ public class Tabla extends javax.swing.JDialog {
             modelo.addRow(new Object[]{sim.lexema,sim.tipo,sim.linea_declaracion,sim.valor});
         }
     }//GEN-LAST:event_rbTIActionPerformed
+
+    private void rbCodIntermedioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbCodIntermedioActionPerformed
+        txtCodIntermedio.setText("\\\\" + padre.getTitle() + "\n");
+        ArrayList<String> temp = padre.codIntermedio;
+        for(String l : temp){
+            txtCodIntermedio.append(l + "\n");
+        }
+    }//GEN-LAST:event_rbCodIntermedioActionPerformed
 
     /**
      * @param args the command line arguments
@@ -248,8 +286,11 @@ public class Tabla extends javax.swing.JDialog {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JRadioButton rbCodIntermedio;
     private javax.swing.JRadioButton rbPR;
     private javax.swing.JRadioButton rbTI;
     private javax.swing.JTable tblTabla;
+    private javax.swing.JTextArea txtCodIntermedio;
     // End of variables declaration//GEN-END:variables
 }

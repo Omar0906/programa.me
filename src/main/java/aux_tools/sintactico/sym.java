@@ -8,102 +8,100 @@ package aux_tools.sintactico;
 /** CUP generated class containing symbol constants. */
 public class sym {
   /* terminals */
-  public static final int Mul = 74;
+  public static final int Mul = 72;
   public static final int display = 11;
-  public static final int verde = 92;
-  public static final int Menor = 76;
-  public static final int facil_sino = 19;
-  public static final int facil_mientras = 14;
-  public static final int incrementar = 58;
-  public static final int motor = 37;
-  public static final int usar = 82;
-  public static final int fin_programa = 21;
-  public static final int azul = 93;
-  public static final int motor_electrico = 38;
-  public static final int Div = 75;
-  public static final int DosPuntos = 63;
-  public static final int Resta = 73;
-  public static final int mientras = 34;
-  public static final int estado = 90;
-  public static final int detener = 81;
-  public static final int sino = 46;
-  public static final int fin_bloque = 50;
-  public static final int decimal = 51;
-  public static final int arreglo = 94;
-  public static final int Suma = 72;
+  public static final int verde = 90;
+  public static final int Menor = 74;
+  public static final int facil_sino = 18;
+  public static final int incrementar = 56;
+  public static final int motor = 36;
+  public static final int usar = 80;
+  public static final int fin_programa = 20;
+  public static final int azul = 91;
+  public static final int Div = 73;
+  public static final int DosPuntos = 61;
+  public static final int Resta = 71;
+  public static final int mientras = 33;
+  public static final int estado = 88;
+  public static final int detener = 79;
+  public static final int sino = 44;
+  public static final int fin_bloque = 48;
+  public static final int decimal = 49;
+  public static final int arreglo = 92;
+  public static final int Suma = 70;
   public static final int caso = 7;
-  public static final int veces = 48;
-  public static final int mostrar = 36;
-  public static final int inicio_var = 29;
-  public static final int ERROR = 83;
-  public static final int incluir = 27;
-  public static final int decrementar = 59;
-  public static final int grados = 24;
-  public static final int y = 55;
+  public static final int veces = 46;
+  public static final int mostrar = 35;
+  public static final int inicio_var = 28;
+  public static final int ERROR = 81;
+  public static final int incluir = 26;
+  public static final int decrementar = 57;
+  public static final int grados = 23;
+  public static final int y = 53;
   public static final int definir = 9;
-  public static final int PUNTO_COMA = 62;
+  public static final int PUNTO_COMA = 60;
   public static final int inicio_bloque = 6;
-  public static final int girar = 23;
-  public static final int o = 57;
-  public static final int COMA = 85;
-  public static final int seg = 43;
-  public static final int motor_paso = 39;
+  public static final int girar = 22;
+  public static final int o = 55;
+  public static final int COMA = 83;
+  public static final int seg = 41;
+  public static final int motor_paso = 37;
   public static final int facil_bloque = 12;
-  public static final int Lla_c = 67;
-  public static final int hr = 26;
-  public static final int Lla_a = 66;
-  public static final int avanzar = 88;
-  public static final int prender = 40;
-  public static final int facil_si = 18;
-  public static final int no = 56;
-  public static final int inicio_programa = 28;
+  public static final int Lla_c = 65;
+  public static final int hr = 25;
+  public static final int Lla_a = 64;
+  public static final int avanzar = 86;
+  public static final int prender = 38;
+  public static final int facil_si = 17;
+  public static final int no = 54;
+  public static final int inicio_programa = 27;
   public static final int facil_hacer_mientras = 13;
-  public static final int retroceder = 89;
-  public static final int facil_repetir = 16;
+  public static final int retroceder = 87;
+  public static final int facil_repetir = 15;
   public static final int derecha = 10;
-  public static final int texto = 53;
-  public static final int Menor_i = 80;
-  public static final int Mayor = 77;
-  public static final int facil_selector = 17;
+  public static final int texto = 51;
+  public static final int Menor_i = 78;
+  public static final int Mayor = 75;
+  public static final int facil_selector = 16;
   public static final int Texto = 4;
   public static final int EOF = 0;
-  public static final int PUNTO = 84;
-  public static final int repetir = 41;
-  public static final int falso = 20;
-  public static final int logico = 54;
+  public static final int PUNTO = 82;
+  public static final int repetir = 39;
+  public static final int falso = 19;
+  public static final int logico = 52;
   public static final int Numero = 2;
-  public static final int led = 32;
-  public static final int rojo = 91;
-  public static final int arregloBi = 95;
-  public static final int verdadero = 49;
-  public static final int Tiempo = 61;
-  public static final int asignar = 15;
+  public static final int led = 31;
+  public static final int rojo = 89;
+  public static final int arregloBi = 93;
+  public static final int verdadero = 47;
+  public static final int Tiempo = 59;
+  public static final int asignar = 14;
   public static final int error = 1;
-  public static final int Cor_c = 69;
-  public static final int Cor_a = 68;
-  public static final int tiempo = 47;
-  public static final int Diferente = 78;
-  public static final int si = 45;
-  public static final int entero = 52;
-  public static final int selector = 44;
-  public static final int visualizar = 86;
-  public static final int izquierda = 31;
-  public static final int Asignacion_s = 71;
-  public static final int salir = 42;
+  public static final int Cor_c = 67;
+  public static final int Cor_a = 66;
+  public static final int tiempo = 45;
+  public static final int Diferente = 76;
+  public static final int si = 43;
+  public static final int entero = 50;
+  public static final int selector = 42;
+  public static final int visualizar = 84;
+  public static final int izquierda = 30;
+  public static final int Asignacion_s = 69;
+  public static final int salir = 40;
   public static final int como = 8;
-  public static final int hacer = 25;
-  public static final int Identificador = 60;
-  public static final int para = 87;
-  public static final int fin_var = 22;
-  public static final int Mayor_i = 79;
-  public static final int Par_c = 65;
-  public static final int Igual = 70;
-  public static final int Par_a = 64;
-  public static final int min = 35;
+  public static final int hacer = 24;
+  public static final int Identificador = 58;
+  public static final int para = 85;
+  public static final int fin_var = 21;
+  public static final int Mayor_i = 77;
+  public static final int Par_c = 63;
+  public static final int Igual = 68;
+  public static final int Par_a = 62;
+  public static final int min = 34;
   public static final int apagar = 5;
   public static final int Decimal = 3;
-  public static final int ledRGB = 33;
-  public static final int intensidad = 30;
+  public static final int ledRGB = 32;
+  public static final int intensidad = 29;
   public static final String[] terminalNames = new String[] {
   "EOF",
   "error",
@@ -119,7 +117,6 @@ public class sym {
   "display",
   "facil_bloque",
   "facil_hacer_mientras",
-  "facil_mientras",
   "asignar",
   "facil_repetir",
   "facil_selector",
@@ -143,7 +140,6 @@ public class sym {
   "min",
   "mostrar",
   "motor",
-  "motor_electrico",
   "motor_paso",
   "prender",
   "repetir",

@@ -1,5 +1,6 @@
 package aux_tools.sintactico;
 import java_cup.runtime.Symbol;
+import mx.tectepic.programa.me.Editor;
 %%
 %class Lexer_S
 %public
@@ -34,6 +35,16 @@ StringCharacter = [^\r\n\"\\]
     private int comment_count = 0;
     public String msg = "";
     private int par_apcount = 0;
+    private Editor editor;
+    public void setEditor(Editor padre){
+        this.editor = padre;
+    }
+    private void addErrores(int linea, String mensaje){
+        editor.ERRORES.add(new ErroresSintacticos(linea,mensaje));
+    }
+    private void mensaje(String msg){
+        System.out.println(msg);
+    }
     public boolean parentesisIguales(){return par_apcount==0;}
     private Symbol symbol(int type, Object value){
         return new Symbol(type,yyline,yycolumn,value);
@@ -137,7 +148,8 @@ StringCharacter = [^\r\n\"\\]
     ">=" {return new Symbol(sym.Mayor_i,(int) yychar,yyline,yytext());}
     "<=" {return new Symbol(sym.Menor_i,(int) yychar,yyline,yytext());}
     "/" {InputCharacter}* {LineTerminator}? {
-        this.msg = "Código de error 6: Cadena inválida ";return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
+        //this.msg = "Código de error 6: Cadena inválida ";return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
+        addErrores(yyline,"Error lexico en la línea " + (yyline+1)+ " --> Cadena invalida.");
     }
     {D}+ {
         return new Symbol(sym.Numero,(int) yychar,yyline,new Integer(yytext()));
@@ -147,17 +159,27 @@ StringCharacter = [^\r\n\"\\]
         return new Symbol(sym.Tiempo,(int) yychar,yyline,yytext());
     }
     {D}+ ("seg"|"hr"|"min") {
+        addErrores(yyline,"Error lexico en la línea " + (yyline)+ " --> Formato de tiempo incorrecto, debe estar separado por un espacio .");
         this.msg = "Código de error 5: Formato de tiempo incorrecto, debe estar separado por un espacio ";  return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
     }
-    
     ([0-9]+ "." {D}) {
         return new Symbol(sym.Decimal,(int) yychar,yyline,new Double(yytext()));
     }
     
     {L}({L}|{D})* {return new Symbol(sym.Identificador,(int) yychar,yyline,yytext());}
     
+    {D}+ "." {
+        addErrores(yyline,"Error lexico en la línea " + (yyline+1)+ " --> Formato de número decimal incorrecto.");
+        this.msg = "Código de error 2: Formato de número decimal incorrecto "; yytext(); linea = this.yyline+1;
+    }
+    {D}+ ("." ([0-9]+|"."+)+) {
+        addErrores(yyline,"Error lexico en la línea " + (yyline+1)+ " --> Formato de número decimal incorrecto.");
+        this.msg = "Código de error 2: Formato de número decimal incorrecto "; yytext(); linea = this.yyline+1;
+    }
     //"." (prender|girar|apagar|estado) {return new Symbol(sym.Propiedad,(int) yychar,yyline,yytext());}
-     . {this.msg = "Código de error 1: Símbolo no reconocido ";return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());}
+     . {addErrores(yyline,"Error lexico en la línea " + (yyline+1)+ " --> Símbolo no reconocido.");
+         this.msg = "Código de error 1: Símbolo no reconocido ";return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
+     }
 }
 <COMMENT> {
   "/*" { comment_count++; }
@@ -165,6 +187,9 @@ StringCharacter = [^\r\n\"\\]
   {CommentContent} { }
 }
 <STRING> {
+    ";" {addErrores(yyline,"Error lexico en la línea " + (yyline+1)+ " --> La cadena no esta cerrada.");
+    this.msg = "Código de error 4: La cadena no esta cerrada ";  yybegin(YYINITIAL); return new Symbol(sym.ERROR,(int) yychar,yyline,yytext()); 
+    }
   "\""                             { yybegin(YYINITIAL);string.append("\"");return new Symbol(sym.Texto,(int) yychar,yyline,string.toString());}
   
   {StringCharacter}+             { string.append( yytext() ); }
@@ -180,8 +205,12 @@ StringCharacter = [^\r\n\"\\]
   "\\\\"                         { string.append( '\\' ); }
   
   /* error cases */
-  ";" {
-    this.msg = "Código de error 4: La cadena no esta cerrada ";  yybegin(YYINITIAL); return new Symbol(sym.ERROR,(int) yychar,yyline,yytext()); }
-  \\.                            { this.msg = "Código de error 4: La cadena no esta cerrada ";  yybegin(YYINITIAL); return new Symbol(sym.ERROR,(int) yychar,yyline,yytext()); }
-  {LineTerminator}               { this.msg = "Código de error 4: La cadena no esta cerrada ";  yybegin(YYINITIAL); return new Symbol(sym.ERROR,(int) yychar,yyline,yytext()); }
+  
+  \\.                            { addErrores(yyline,"Error lexico en la línea " + (yyline+1)+ " --> La cadena no esta cerrada.");
+                                    this.msg = "Código de error 4: La cadena no esta cerrada ";  yybegin(YYINITIAL); return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
+                                    }
+    
+  {LineTerminator}               { addErrores(yyline,"Error lexico en la línea " + (yyline+1)+ " --> La cadena no esta cerrada.");
+                                    this.msg = "Código de error 4: La cadena no esta cerrada ";  yybegin(YYINITIAL); return new Symbol(sym.ERROR,(int) yychar,yyline,yytext());
+                                    }
 }

@@ -102,6 +102,7 @@ public class Editor extends javax.swing.JFrame {
         tpTablas.setVisible(true);
         tablaSimbolos_id = new TablaSimbolos();
         tpTablas.setVisible(false);
+        codIntermedio =new ArrayList<>();
         manager();
     }
 
@@ -445,7 +446,7 @@ public class Editor extends javax.swing.JFrame {
             estaGuardado = true;
         }
     }
-
+/*
     private void AnalisisLexico() {
         txtMensajes.setText("");
         tablaSimbolos_id = new TablaSimbolos();
@@ -462,11 +463,12 @@ public class Editor extends javax.swing.JFrame {
             String errores = "";
             boolean erro = false;
             Reader lector = new BufferedReader(new FileReader("archivo.txt"));
-            Lexer lexer = new Lexer(lector);
+            Lexer_S lexer = new Lexer_S(lector);
+            lexer.setEditor(this);
             while (true) {
                 Tokens tokens = lexer.yylex();
                 if (tokens == null) {
-                    txtMensajes.setText("Terminado analisis lexico\n");
+                    //txtMensajes.setText("Terminado analisis lexico\n");
                     if (!erro) {
                         if (cont_par_a > cont_par_c || cont_lla_a > cont_lla_c || cont_cor_a > cont_cor_c) {
                             if (cont_par_a > cont_par_c) {
@@ -576,6 +578,7 @@ public class Editor extends javax.swing.JFrame {
             System.out.println(ex);
         }
     }
+    */
     private void btnAnalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAnalizarActionPerformed
         if (esNuevo) {
             guardarComo();
@@ -626,13 +629,15 @@ public class Editor extends javax.swing.JFrame {
                 txtMensajes.append("\nNo se encontraron errores en el programa.");
             }
         }*/
+        codIntermedio.clear();
         if (texto.getText().trim().isEmpty()) {
             txtMensajes.setText("No hay texto para analizar");
             return;
         }
         ERRORES.clear();
-        AnalisisLexico();
+        //AnalisisLexico();
         tablaSimbolos_id.clear();
+        txtMensajes.setText("");
         String ST = texto.getText();
         Syntax s = new Syntax(new Lexer_S(new StringReader(ST)));
         s.setEditor(this);
@@ -650,7 +655,7 @@ public class Editor extends javax.swing.JFrame {
             }
             txtMensajes.append(cad);
         } else {
-            txtMensajes.append("Análisis sintáctico finalizado.");
+            txtMensajes.append("Compilación completada.");
             txtMensajes.append("\nNo se encontraron errores en el programa.");
         }
     }//GEN-LAST:event_btnAnalizarActionPerformed
@@ -746,6 +751,7 @@ public class Editor extends javax.swing.JFrame {
             }
         });
     }
+    public ArrayList<String> codIntermedio;
     private JTextArea texto;
     private TextLineNumber tln;
     public Font actualFont = new Font("Consolas", 0, 16);

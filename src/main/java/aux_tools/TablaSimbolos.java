@@ -26,7 +26,7 @@ public class TablaSimbolos {
     }
     public void updateToken(Simbolo t) {
         if (buscarToken(t)) {
-            this.ListaTokens.add(t);
+            ubicarToken(t.getLexema(), t.getTipo(), t.getValor());
             sortTabla();
         }
     }
@@ -49,7 +49,7 @@ public class TablaSimbolos {
         }
         return false;
     }
-    public Boolean buscarToken(String t) {
+    public Boolean existeToken(String t) {
         if(this.ListaTokens.isEmpty()){
             return false;
         }
