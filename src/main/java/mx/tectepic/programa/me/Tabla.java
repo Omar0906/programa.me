@@ -235,11 +235,7 @@ public class Tabla extends javax.swing.JDialog {
     }//GEN-LAST:event_rbTIActionPerformed
 
     private void rbCodIntermedioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbCodIntermedioActionPerformed
-        txtCodIntermedio.setText("\\\\" + padre.getTitle() + "\n");
-        ArrayList<String> temp = padre.codIntermedio;
-        for(String l : temp){
-            txtCodIntermedio.append(l + "\n");
-        }
+        txtCodIntermedio.setText(padre.intermedio);
     }//GEN-LAST:event_rbCodIntermedioActionPerformed
 
     /**

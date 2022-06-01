@@ -17,7 +17,7 @@ public class Analizadorlexico {
         Generar();
     }
     public static void Generar() throws Exception {
-        System.out.println("Creando Analizador Léxico");
+        System.out.println("Creando Analizador Léxico");    
         generarLexico(ruta.replace("\\", "/") + directoriolexico + "lexer.flex");
         System.out.println("Terminado Analizador Léxico");
         String[] rutas =

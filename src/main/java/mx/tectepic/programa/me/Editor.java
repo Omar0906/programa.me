@@ -103,7 +103,9 @@ public class Editor extends javax.swing.JFrame {
         tpTablas.setVisible(true);
         tablaSimbolos_id = new TablaSimbolos();
         tpTablas.setVisible(false);
-        codIntermedio =new ArrayList<>();
+        codIntermedio = new ArrayList<>();
+        codigoIntermedio = new HashMap<>();
+        etiquetas = new HashMap<>();
         manager();
     }
 
@@ -630,8 +632,11 @@ public class Editor extends javax.swing.JFrame {
                 txtMensajes.append("\nNo se encontraron errores en el programa.");
             }
         }*/
+        lineas = 0;
+        intermedio = "";
         codIntermedio.clear();
         codigoIntermedio.clear();
+        etiquetas.clear();
         if (texto.getText().trim().isEmpty()) {
             txtMensajes.setText("No hay texto para analizar");
             return;
@@ -659,6 +664,8 @@ public class Editor extends javax.swing.JFrame {
         } else {
             txtMensajes.append("Compilación completada.");
             txtMensajes.append("\nNo se encontraron errores en el programa.");
+            lineas = (int) texto.getText().lines().count();
+            genCodigoIntermedio();
         }
     }//GEN-LAST:event_btnAnalizarActionPerformed
     private void insertarSimboloLexico(String lexema, String componente, int linea) {
@@ -697,8 +704,7 @@ public class Editor extends javax.swing.JFrame {
                 "YES_NO_OPTION", JOptionPane.YES_NO_OPTION,
                 JOptionPane.INFORMATION_MESSAGE);
         if (reply == JOptionPane.YES_OPTION) {
-
-            String ruta = new File("src\\main\\java\\aux_tools\\Nuevo programa.pme").getAbsolutePath();
+            String ruta = new File("src/main/java/aux_tools/Nuevo programa.pme").getAbsolutePath();
             System.out.print(ruta);
             archivo = new File(ruta);
             if (archivo.canRead()) {
@@ -706,11 +712,13 @@ public class Editor extends javax.swing.JFrame {
                     String documento = AbrirArchivo(archivo);
                     this.setTitle(archivo.getName());
                     texto.setText(documento);
+                    esNuevo = true;
                 } else {
                     JOptionPane.showMessageDialog(null, "Archivo no es compatible");
                 }
             }
         } else {
+            texto.setText("");
         }
         //this.tblLexico
     }//GEN-LAST:event_btnNuevoActionPerformed
@@ -753,8 +761,22 @@ public class Editor extends javax.swing.JFrame {
             }
         });
     }
+    public void genCodigoIntermedio(){
+        String cod = "";
+        for(int i = 0; i <= lineas; i++){
+            String temp = etiquetas.get(i);
+            String temp2 = codigoIntermedio.get(i);
+            if(temp != null)
+                cod += temp;
+            if(temp2 != null)
+                cod += "    " + temp2 + "\n";
+        }
+        intermedio =  cod;
+    }
+    public String intermedio = "";
     public ArrayList<String> codIntermedio;
     public HashMap<Integer, String> codigoIntermedio;
+    public HashMap<Integer, String> etiquetas;
     private JTextArea texto;
     private TextLineNumber tln;
     public Font actualFont = new Font("Consolas", 0, 16);
@@ -776,6 +798,7 @@ public class Editor extends javax.swing.JFrame {
     int cont_par_c = 0;
     int cont_cor_c = 0;
     int cont_lla_c = 0;
+    public int lineas;
     ////////////////////////////////////////////
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAbrir;

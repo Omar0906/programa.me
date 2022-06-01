@@ -50,7 +50,8 @@ public class EstiloDialog extends javax.swing.JDialog {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setTitle("Cambiar Estilo");
-        setMinimumSize(new java.awt.Dimension(560, 350));
+        setMinimumSize(new java.awt.Dimension(500, 350));
+        setPreferredSize(new java.awt.Dimension(750, 214));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(""));
         jPanel1.setFont(new java.awt.Font("Consolas", 0, 14)); // NOI18N
