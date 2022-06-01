@@ -28,6 +28,8 @@ public class TablaSimbolos {
         if (buscarToken(t)) {
             ubicarToken(t.getLexema(), t.getTipo(), t.getValor());
             sortTabla();
+            int a = 3;
+            double av = 3 + a;
         }
     }
 
@@ -70,7 +72,7 @@ public class TablaSimbolos {
             }
         }
         return null;
-    }
+    }//La función ubicarToken busca dentro de la tabla el símbolo que coincida con el lexema t y actualiza el tipo de dato
     public void ubicarToken(String t,String tipo) {
         if(this.ListaTokens.isEmpty()){
             return;
@@ -80,7 +82,7 @@ public class TablaSimbolos {
                 ListaTokens.get(l).setTipo(tipo);
             }
         }
-    }
+    }//La función ubicarToken busca dentro de la tabla el símbolo que coincida con el lexema t y actualiza el tipo de dato junto con el valor
     public void ubicarToken(String t,String tipo,Object valor) {
         if(this.ListaTokens.isEmpty()){
             return;
@@ -92,6 +94,20 @@ public class TablaSimbolos {
                 
             }
         }
+    }
+    public boolean nivelTipos(Simbolo a, Simbolo b){
+        if(a.getTipo().equals("entero")){
+            return b.getTipo().equals("entero");
+        }
+        if(a.getTipo().equals("decimal")){
+            switch (b.getTipo()){
+                case "entero":
+                case "deciaml":
+                    return true;
+                default: break;
+            }   
+        }
+        return a.getTipo().equals(b.getTipo());
     }
     public ArrayList<Simbolo> verTablaSimbolos(){
         return this.ListaTokens;

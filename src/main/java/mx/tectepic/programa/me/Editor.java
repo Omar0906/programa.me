@@ -28,6 +28,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import javax.swing.AbstractAction;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -630,6 +631,7 @@ public class Editor extends javax.swing.JFrame {
             }
         }*/
         codIntermedio.clear();
+        codigoIntermedio.clear();
         if (texto.getText().trim().isEmpty()) {
             txtMensajes.setText("No hay texto para analizar");
             return;
@@ -752,6 +754,7 @@ public class Editor extends javax.swing.JFrame {
         });
     }
     public ArrayList<String> codIntermedio;
+    public HashMap<Integer, String> codigoIntermedio;
     private JTextArea texto;
     private TextLineNumber tln;
     public Font actualFont = new Font("Consolas", 0, 16);

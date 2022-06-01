@@ -22,9 +22,11 @@ public class Tabla extends javax.swing.JDialog {
         initComponents();
         this.padre = padre;
         this.setLocationRelativeTo(padre);
-        rbPR.setFont(padre.getFont());
-        rbTI.setFont(padre.getFont());
-        rbCodIntermedio.setFont(padre.getFont());
+        rbPR.setFont(padre.actualFont);
+        rbTI.setFont(padre.actualFont);
+        rbCodIntermedio.setFont(padre.actualFont);
+        txtCodIntermedio.setFont(padre.actualFont);
+        tblTabla.setFont(padre.actualFont);
     }
 
     /**
@@ -111,6 +113,7 @@ public class Tabla extends javax.swing.JDialog {
         ));
         jScrollPane1.setViewportView(tblTabla);
 
+        txtCodIntermedio.setEditable(false);
         txtCodIntermedio.setColumns(20);
         txtCodIntermedio.setRows(5);
         jScrollPane2.setViewportView(txtCodIntermedio);
